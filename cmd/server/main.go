@@ -13,12 +13,11 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"filespace-backend/api/auth"
-	user "filespace-backend/models"
+	auth "filespace-backend/internal/auth"
+	refresh "filespace-backend/internal/refresh"
 )
 
 func main() {
@@ -32,18 +31,13 @@ func main() {
 	}
 	fmt.Println("Connected to MongoDB.")
 
-	var user user.Model
-	err = client.Database("test").Collection("users").FindOne(context.Background(), bson.M{"email": "paralejasjustine15@gmail.com"}).Decode(&user)
-	if err != nil {
-		log.Fatal("Error finding user:", err)
-	}
-
-	fmt.Printf("User: %+v\n", user)
-
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 
-	router.Post("/api/v1/auth", auth.Handler(client))
-	http.ListenAndServe(os.Getenv("PORT"), router)
+	router.Post("/api/"+os.Getenv("VERSION")+"/auth", auth.Handler(client))
+	router.Post("/api/v2/refresh", refresh.Handler(client))
+
+	port := os.Getenv("PORT")
+	http.ListenAndServe(":"+port, router)
 }

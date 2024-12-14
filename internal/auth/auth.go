@@ -3,29 +3,32 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 
 	user "filespace-backend/models"
+	auth "filespace-backend/types/auth"
+	token "filespace-backend/utils"
 )
 
 func Handler(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var reqBody struct {
-			Email    string `json:"email"`
-			Password string `json:"password"`
-		}
+		var reqBody = auth.Body{}
 
 		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+			log.Fatal(err)
 			http.Error(w, "Bad request. Missing input: Email.", http.StatusBadRequest)
 			return
 		}
+
+		fmt.Println(reqBody.Email)
 
 		if reqBody.Email == "" {
 			http.Error(w, "Bad request. Missing input: Email.", http.StatusBadRequest)
@@ -36,10 +39,11 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		collection := client.Database("your_db_name").Collection("users")
+		collection := client.Database("test").Collection("users")
 		var user user.Model
-		err := collection.FindOne(context.Background(), bson.M{"email": reqBody.Email}).Decode(&user)
+		err := collection.FindOne(context.TODO(), bson.M{"email": reqBody.Email}).Decode(&user)
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, "Account not found.", http.StatusNotFound)
 			return
 		}
@@ -55,13 +59,13 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		accessToken, err := generateToken(user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
+		accessToken, err := token.Generate(user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
-		newRefreshToken, err := generateToken(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
+		newRefreshToken, err := token.Generate(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
@@ -114,25 +118,12 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			MaxAge:   24 * 60 * 60,
 		})
 
-		user.Password = ""
-		user.RefreshToken = nil
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"accessToken": accessToken,
-			"user":        user,
-		})
+		response := auth.Response{
+			AccessToken: accessToken,
+			Email:       user.Email,
+			Username:    user.Username,
+			Roles:       user.Roles,
+		}
+		json.NewEncoder(w).Encode(response)
 	}
-}
-
-func generateToken(user user.Model, secret string, expiration time.Duration) (string, error) {
-	claims := jwt.MapClaims{
-		"user": map[string]interface{}{
-			"username": user.Username,
-			"email":    user.Email,
-			"roles":    user.Roles,
-			"_id":      user.ID,
-		},
-		"exp": time.Now().Add(expiration).Unix(),
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(secret))
 }

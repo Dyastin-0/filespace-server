@@ -61,7 +61,7 @@ func generateKeys() {
 	newVariables = append(newVariables,
 		"BASE_CLIENT_URL=https://filespace.dyastin.tech",
 		"PORT=3004",
-		"VERSION=v1",
+		"VERSION=v2",
 		"NODE_ENV=production",
 		"GCLOUD_PROJECT_ID=filespace-442811",
 		"GOOGLE_APPLICATION_CREDENTIALS=./secretsaccesor.json",
