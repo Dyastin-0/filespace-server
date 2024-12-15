@@ -1,7 +1,7 @@
 package token
 
 import (
-	user "filespace-backend/models"
+	user "filespace/models"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"

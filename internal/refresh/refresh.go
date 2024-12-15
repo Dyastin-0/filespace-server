@@ -12,9 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	user "filespace-backend/models"
-	"filespace-backend/types/refresh"
-	token "filespace-backend/utils"
+	user "filespace/models"
+	"filespace/types/refresh"
+	token "filespace/utils"
 )
 
 func Handler(client *mongo.Client) http.HandlerFunc {

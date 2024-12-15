@@ -13,9 +13,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 
-	user "filespace-backend/models"
-	auth "filespace-backend/types/auth"
-	token "filespace-backend/utils"
+	user "filespace/models"
+	auth "filespace/types/auth"
+	token "filespace/utils"
 )
 
 func Handler(client *mongo.Client) http.HandlerFunc {

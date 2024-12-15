@@ -16,8 +16,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	auth "filespace-backend/internal/auth"
-	refresh "filespace-backend/internal/refresh"
+	auth "filespace/internal/auth"
+	refresh "filespace/internal/refresh"
 )
 
 func main() {

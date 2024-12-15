@@ -1,4 +1,4 @@
-module filespace-backend
+module filespace
 
 go 1.23.4
 
