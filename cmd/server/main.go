@@ -16,8 +16,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	auth "filespace/internal/auth"
-	refresh "filespace/internal/refresh"
+	credential "filespace/internal/credential"
+
+	router "filespace/internal/router"
 )
 
 func main() {
@@ -25,19 +26,25 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	version := os.Getenv("VERSION")
+
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGODB_URI")))
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Println("Connected to MongoDB.")
 
-	router := chi.NewRouter()
-	router.Use(middleware.Logger)
-	router.Use(render.SetContentType(render.ContentTypeJSON))
+	MainRouter := chi.NewRouter()
 
-	router.Post("/api/"+os.Getenv("VERSION")+"/auth", auth.Handler(client))
-	router.Post("/api/v2/refresh", refresh.Handler(client))
+	MainRouter.Use(middleware.Logger)
+	MainRouter.Use(credential.Handler)
+	MainRouter.Use(render.SetContentType(render.ContentTypeJSON))
+
+	MainRouter.Mount("/api/"+version+"/auth", router.Auth(client))
 
 	port := os.Getenv("PORT")
-	http.ListenAndServe(":"+port, router)
+	if err := http.ListenAndServe(":"+port, MainRouter); err != nil {
+		log.Fatal("Server failed: ", err)
+	}
 }

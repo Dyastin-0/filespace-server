@@ -1,22 +1,36 @@
 package token
 
 import (
-	user "filespace/models"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+
+	user "filespace/models"
+	authTypes "filespace/types/auth"
 )
 
 func Generate(user user.Model, secret string, expiration time.Duration) (string, error) {
-	claims := jwt.MapClaims{
-		"user": map[string]interface{}{
-			"username": user.Username,
-			"email":    user.Email,
-			"roles":    user.Roles,
-			"_id":      user.ID,
+	claims := authTypes.Claims{
+		User: struct {
+			Username string   `json:"username"`
+			Email    string   `json:"email"`
+			Roles    []string `json:"roles"`
+			ID       string   `json:"_id"`
+		}{
+			Username: user.Username,
+			Email:    user.Email,
+			Roles:    user.Roles,
+			ID:       user.ID,
 		},
-		"exp": time.Now().Add(expiration).Unix(),
+		Exp: time.Now().Add(expiration).Unix(),
+		StandardClaims: jwt.StandardClaims{
+			Issuer:   "Filespace",
+			Subject:  user.ID,
+			IssuedAt: time.Now().Unix(),
+		},
 	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
 	return token.SignedString([]byte(secret))
 }

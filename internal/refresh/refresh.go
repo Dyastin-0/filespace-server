@@ -3,7 +3,6 @@ package refresh
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -13,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	user "filespace/models"
+	authTypes "filespace/types/auth"
 	"filespace/types/refresh"
 	token "filespace/utils"
 )
@@ -40,13 +40,12 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 		var user user.Model
 		err = collection.FindOne(context.Background(), bson.M{"refreshToken": refreshToken}).Decode(&user)
 		if err != nil {
-			claims := &jwt.StandardClaims{}
+			claims := &authTypes.Claims{}
 			_, err := jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {
-				fmt.Println(err)
 				return []byte(os.Getenv("REFRESH_TOKEN_KEY")), nil
 			})
 			if err != nil {
-				http.Error(w, "Forbidden", http.StatusForbidden)
+				http.Error(w, "Forbidden!", http.StatusForbidden)
 				return
 			}
 			_, err = collection.UpdateOne(context.Background(), bson.M{"email": claims.Subject}, bson.M{"$set": bson.M{"refreshToken": []string{}}})
@@ -54,7 +53,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
-			http.Error(w, "Forbidden", http.StatusForbidden)
+			http.Error(w, "Forbidden!!", http.StatusForbidden)
 			return
 		}
 
@@ -65,7 +64,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			}
 		}
 
-		claims := &jwt.StandardClaims{}
+		claims := &authTypes.Claims{}
 		_, err = jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("REFRESH_TOKEN_KEY")), nil
 		})
@@ -75,12 +74,12 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
-			http.Error(w, "Forbidden", http.StatusForbidden)
+			http.Error(w, "Forbidden!!!", http.StatusForbidden)
 			return
 		}
 
-		if user.Email != claims.Subject {
-			http.Error(w, "Forbidden", http.StatusForbidden)
+		if user.Email != claims.User.Email {
+			http.Error(w, "Forbidden!!!!", http.StatusForbidden)
 			return
 		}
 

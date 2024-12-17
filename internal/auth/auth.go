@@ -28,8 +28,6 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		fmt.Println(reqBody.Email)
-
 		if reqBody.Email == "" {
 			http.Error(w, "Bad request. Missing input: Email.", http.StatusBadRequest)
 			return
