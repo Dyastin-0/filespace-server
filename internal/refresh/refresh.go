@@ -45,7 +45,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 				return []byte(os.Getenv("REFRESH_TOKEN_KEY")), nil
 			})
 			if err != nil {
-				http.Error(w, "Forbidden!", http.StatusForbidden)
+				http.Error(w, "Forbidden", http.StatusForbidden)
 				return
 			}
 			_, err = collection.UpdateOne(context.Background(), bson.M{"email": claims.Subject}, bson.M{"$set": bson.M{"refreshToken": []string{}}})
@@ -53,7 +53,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
-			http.Error(w, "Forbidden!!", http.StatusForbidden)
+			http.Error(w, "Forbidden", http.StatusForbidden)
 			return
 		}
 
@@ -74,12 +74,12 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
-			http.Error(w, "Forbidden!!!", http.StatusForbidden)
+			http.Error(w, "Forbidden", http.StatusForbidden)
 			return
 		}
 
 		if user.Email != claims.User.Email {
-			http.Error(w, "Forbidden!!!!", http.StatusForbidden)
+			http.Error(w, "Forbidden", http.StatusForbidden)
 			return
 		}
 
