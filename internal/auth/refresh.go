@@ -1,4 +1,4 @@
-package refresh
+package auth
 
 import (
 	"context"
@@ -13,11 +13,10 @@ import (
 
 	user "filespace/models"
 	authTypes "filespace/types/auth"
-	"filespace/types/refresh"
-	token "filespace/utils"
+	utils "filespace/utils"
 )
 
-func Handler(client *mongo.Client) http.HandlerFunc {
+func Refresh(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("jwt")
 
@@ -83,22 +82,22 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		accessToken, err := token.Generate(user, os.Getenv("ACCESS_TOKEN_SECRET"), 15*time.Minute)
+		accessToken, err := utils.GenerateToken(user, os.Getenv("ACCESS_TOKEN_SECRET"), 15*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
-		newRefreshToken, err := token.Generate(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
+		newRefreshToken, err := utils.GenerateToken(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
 		newRefreshTokens = append(newRefreshTokens, newRefreshToken)
 		_, err = collection.UpdateOne(context.Background(), bson.M{"email": user.Email}, bson.M{"$set": bson.M{"refreshToken": newRefreshTokens}})
 		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
@@ -111,7 +110,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			MaxAge:   24 * 60 * 60,
 		})
 
-		response := refresh.Response{
+		response := authTypes.RefreshResponse{
 			AccessToken: accessToken,
 		}
 

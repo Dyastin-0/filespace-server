@@ -3,8 +3,8 @@ package auth
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
+
 	"net/http"
 	"os"
 	"time"
@@ -15,7 +15,7 @@ import (
 
 	user "filespace/models"
 	auth "filespace/types/auth"
-	token "filespace/utils"
+	utils "filespace/utils"
 )
 
 func Handler(client *mongo.Client) http.HandlerFunc {
@@ -39,9 +39,8 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 
 		collection := client.Database("test").Collection("users")
 		var user user.Model
-		err := collection.FindOne(context.TODO(), bson.M{"email": reqBody.Email}).Decode(&user)
+		err := collection.FindOne(context.Background(), bson.M{"email": reqBody.Email}).Decode(&user)
 		if err != nil {
-			fmt.Println(err)
 			http.Error(w, "Account not found.", http.StatusNotFound)
 			return
 		}
@@ -57,13 +56,13 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		accessToken, err := token.Generate(user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
+		accessToken, err := utils.GenerateToken(user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
-		newRefreshToken, err := token.Generate(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
+		newRefreshToken, err := utils.GenerateToken(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return

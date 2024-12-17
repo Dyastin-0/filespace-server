@@ -1,5 +1,5 @@
-package refresh
+package auth
 
-type Response struct {
+type RefreshResponse struct {
 	AccessToken string `json:"access_token"`
 }

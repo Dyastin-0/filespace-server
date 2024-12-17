@@ -1,4 +1,4 @@
-package token
+package utils
 
 import (
 	"time"
@@ -9,7 +9,7 @@ import (
 	authTypes "filespace/types/auth"
 )
 
-func Generate(user user.Model, secret string, expiration time.Duration) (string, error) {
+func GenerateToken(user user.Model, secret string, expiration time.Duration) (string, error) {
 	claims := authTypes.Claims{
 		User: struct {
 			Username string   `json:"username"`
