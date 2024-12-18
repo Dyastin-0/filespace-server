@@ -24,16 +24,12 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 
 		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 			log.Fatal(err)
-			http.Error(w, "Bad request. Missing input: Email.", http.StatusBadRequest)
+			http.Error(w, "Bad request.", http.StatusBadRequest)
 			return
 		}
 
-		if reqBody.Email == "" {
-			http.Error(w, "Bad request. Missing input: Email.", http.StatusBadRequest)
-			return
-		}
-		if reqBody.Password == "" {
-			http.Error(w, "Bad request. Invalid input: Password.", http.StatusBadRequest)
+		if reqBody.Email == "" || reqBody.Password == "" {
+			http.Error(w, "Bad request. Missing required fields.", http.StatusBadRequest)
 			return
 		}
 

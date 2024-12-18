@@ -41,6 +41,7 @@ func main() {
 	MainRouter.Use(render.SetContentType(render.ContentTypeJSON))
 
 	MainRouter.Mount("/api/"+version+"/auth", router.Auth(client))
+
 	port := os.Getenv("PORT")
 	if err := http.ListenAndServe(":"+port, MainRouter); err != nil {
 		log.Fatal("Server failed: ", err)

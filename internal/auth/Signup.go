@@ -7,13 +7,12 @@ import (
 	"os"
 	"time"
 
-	auth "filespace/internal/auth/types"
-
-	user "filespace/internal/models"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
+	auth "filespace/internal/auth/types"
+	user "filespace/internal/models"
+	mail "filespace/pkg/mail"
 	utils "filespace/utils"
 )
 
@@ -78,6 +77,15 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
+
+		mail.SendHTMLEmail(user.Email, "Verify your account",
+			mail.Template(
+				"Verification",
+				"Hi, "+user.Username+". Thank you for signing up. Please verify your account by clicking the link below. if you did not sign up, please ignore this email.",
+				os.Getenv("BASE_CLIENT_URL")+"/account/verification?t="+verificationToken,
+				"Verify Account",
+			),
+		)
 
 		w.WriteHeader(http.StatusCreated)
 	}
