@@ -11,8 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	user "filespace/models"
-	authTypes "filespace/types/auth"
+	authTypes "filespace/internal/auth/types"
+	user "filespace/internal/models"
 	utils "filespace/utils"
 )
 

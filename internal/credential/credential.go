@@ -1,7 +1,7 @@
 package credential
 
 import (
-	"filespace/configs"
+	"filespace/internal/configs"
 	"net/http"
 )
 

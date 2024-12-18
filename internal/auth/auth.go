@@ -13,8 +13,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 
-	user "filespace/models"
-	auth "filespace/types/auth"
+	auth "filespace/internal/auth/types"
+	user "filespace/internal/models"
 	utils "filespace/utils"
 )
 

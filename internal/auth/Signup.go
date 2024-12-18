@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"filespace/types/auth"
+	auth "filespace/internal/auth/types"
 
-	user "filespace/models"
+	user "filespace/internal/models"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

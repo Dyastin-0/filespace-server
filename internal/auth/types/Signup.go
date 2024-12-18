@@ -1,4 +1,4 @@
-package auth
+package types
 
 type SignupBody struct {
 	Email    string `json:"email"`
