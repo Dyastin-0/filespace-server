@@ -10,11 +10,11 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"golang.org/x/crypto/bcrypt"
 
 	types "filespace/internal/auth/types"
 	user "filespace/internal/models/user"
-	utils "filespace/utils"
+	"filespace/pkg/utils/hash"
+	token "filespace/pkg/utils/token"
 )
 
 func Handler(client *mongo.Client) http.HandlerFunc {
@@ -45,19 +45,19 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(reqBody.Password))
+		err = hash.Compare(reqBody.Password, user.Password)
 		if err != nil {
 			http.Error(w, "Invalid credentials.", http.StatusUnauthorized)
 			return
 		}
 
-		accessToken, err := utils.GenerateToken(user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
+		accessToken, err := token.Generate(user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
-		newRefreshToken, err := utils.GenerateToken(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
+		newRefreshToken, err := token.Generate(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return

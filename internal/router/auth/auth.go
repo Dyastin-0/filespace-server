@@ -13,7 +13,8 @@ func Auth(client *mongo.Client) *chi.Mux {
 
 	router.Post("/", auth.Handler(client))
 	router.Post("/sign-up", auth.Signup(client))
-	router.Get("/refresh", auth.Refresh(client))
+	router.Post("/refresh", auth.Refresh(client))
+	router.Post("/verify", auth.Verify(client))
 
 	return router
 }

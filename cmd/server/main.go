@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	credential "filespace/internal/credential"
-	router "filespace/internal/router"
+	router "filespace/internal/router/auth"
 )
 
 func main() {

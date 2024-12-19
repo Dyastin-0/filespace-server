@@ -1,4 +1,4 @@
-package utils
+package hash
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ const (
 	defaultCost = bcrypt.DefaultCost
 )
 
-func GenerateHash(password string) (string, error) {
+func Generate(password string) (string, error) {
 	if password == "" {
 		return "", errors.New("password cannot be empty")
 	}
@@ -23,7 +23,7 @@ func GenerateHash(password string) (string, error) {
 	return string(hashedBytes), nil
 }
 
-func CompareHash(hashedPassword, password string) error {
+func Compare(hashedPassword, password string) error {
 	if hashedPassword == "" || password == "" {
 		return errors.New("hashed password and password cannot be empty")
 	}

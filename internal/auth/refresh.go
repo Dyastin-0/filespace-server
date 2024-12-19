@@ -13,7 +13,7 @@ import (
 
 	authTypes "filespace/internal/auth/types"
 	user "filespace/internal/models/user"
-	utils "filespace/utils"
+	token "filespace/pkg/utils/token"
 )
 
 func Refresh(client *mongo.Client) http.HandlerFunc {
@@ -82,13 +82,13 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		accessToken, err := utils.GenerateToken(user, os.Getenv("ACCESS_TOKEN_SECRET"), 15*time.Minute)
+		accessToken, err := token.Generate(user, os.Getenv("ACCESS_TOKEN_SECRET"), 15*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
-		newRefreshToken, err := utils.GenerateToken(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
+		newRefreshToken, err := token.Generate(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return

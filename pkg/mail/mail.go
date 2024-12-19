@@ -9,7 +9,7 @@ import (
 
 	types "filespace/pkg/mail/types"
 
-	safeHTML "filespace/utils"
+	safeHTML "filespace/pkg/utils/html"
 
 	mail "github.com/wneessen/go-mail"
 )

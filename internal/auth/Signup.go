@@ -15,7 +15,8 @@ import (
 	mail "filespace/pkg/mail"
 	mailTemplate "filespace/pkg/mail/templates"
 	mailTypes "filespace/pkg/mail/types"
-	utils "filespace/utils"
+	hash "filespace/pkg/utils/hash"
+	token "filespace/pkg/utils/token"
 )
 
 func Signup(client *mongo.Client) http.HandlerFunc {
@@ -52,7 +53,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		hashedPassword, herr := utils.GenerateHash(reqBody.Password)
+		hashedPassword, herr := hash.Generate(reqBody.Password)
 		if herr != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
@@ -66,7 +67,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 			Roles:    []string{"122602"},
 		}
 
-		verificationToken, err := utils.GenerateToken(user, os.Getenv("EMAIL_TOKEN_KEY"), 5*time.Minute)
+		verificationToken, err := token.Generate(user, os.Getenv("EMAIL_TOKEN_KEY"), 5*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
