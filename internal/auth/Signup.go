@@ -67,7 +67,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 		}
 
 		verificationToken, err := utils.GenerateToken(user, os.Getenv("EMAIL_TOKEN_KEY"), 5*time.Minute)
-		if err == nil {
+		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
@@ -90,8 +90,12 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 				os.Getenv("BASE_CLIENT_URL")+"/account/verification?t="+verificationToken,
 				"Verify Account"),
 		}
-		mail.SendHTMLEmail(message)
 
+		err = mail.SendHTMLEmail(message)
+		if err != nil {
+			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			return
+		}
 		w.WriteHeader(http.StatusCreated)
 	}
 }
