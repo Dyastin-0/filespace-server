@@ -13,6 +13,8 @@ import (
 	auth "filespace/internal/auth/types"
 	user "filespace/internal/models"
 	mail "filespace/pkg/mail"
+	mailTemplate "filespace/pkg/mail/templates"
+	mailTypes "filespace/pkg/mail/types"
 	utils "filespace/utils"
 )
 
@@ -78,14 +80,17 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		mail.SendHTMLEmail(user.Email, "Verify your account",
-			mail.Template(
+		message := &mailTypes.Message{
+			To:          user.Email,
+			Subject:     "Verify your account",
+			ContentType: mailTypes.HTMLTextEmail,
+			Body: mailTemplate.Default(
 				"Verification",
 				"Hi, "+user.Username+". Thank you for signing up. Please verify your account by clicking the link below. if you did not sign up, please ignore this email.",
 				os.Getenv("BASE_CLIENT_URL")+"/account/verification?t="+verificationToken,
-				"Verify Account",
-			),
-		)
+				"Verify Account"),
+		}
+		mail.SendHTMLEmail(message)
 
 		w.WriteHeader(http.StatusCreated)
 	}

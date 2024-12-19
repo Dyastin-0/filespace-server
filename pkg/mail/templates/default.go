@@ -9,7 +9,7 @@ func escapeEmail(text string) string {
 	return strings.ReplaceAll(strings.ReplaceAll(text, ".", "&#46;"), "@", "&#64;")
 }
 
-func Template(title string, message string, link string, linkTitle string) string {
+func Default(title string, message string, link string, linkTitle string) string {
 	escapedTitle := escapeEmail(title)
 	escapedMessage := escapeEmail(message)
 	escapedLinkTitle := escapeEmail(linkTitle)
