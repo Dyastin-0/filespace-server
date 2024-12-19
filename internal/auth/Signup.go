@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	auth "filespace/internal/auth/types"
-	user "filespace/internal/models"
+	user "filespace/internal/models/user"
 	mail "filespace/pkg/mail"
 	mailTemplate "filespace/pkg/mail/templates"
 	mailTypes "filespace/pkg/mail/types"

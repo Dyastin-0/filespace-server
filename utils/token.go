@@ -6,7 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 
 	authTypes "filespace/internal/auth/types"
-	user "filespace/internal/models"
+	user "filespace/internal/models/user"
 )
 
 func GenerateToken(user user.Model, secret string, expiration time.Duration) (string, error) {

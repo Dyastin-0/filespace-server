@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	authTypes "filespace/internal/auth/types"
-	user "filespace/internal/models"
+	user "filespace/internal/models/user"
 	utils "filespace/utils"
 )
 

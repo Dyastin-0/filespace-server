@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 
@@ -13,14 +12,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 
-	auth "filespace/internal/auth/types"
-	user "filespace/internal/models"
+	types "filespace/internal/auth/types"
+	user "filespace/internal/models/user"
 	utils "filespace/utils"
 )
 
 func Handler(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var reqBody = auth.Body{}
+		var reqBody = types.Body{}
 
 		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 			log.Fatal(err)
@@ -35,7 +34,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 
 		collection := client.Database("test").Collection("users")
 		var user user.Model
-		err := collection.FindOne(context.Background(), bson.M{"email": reqBody.Email}).Decode(&user)
+		err := collection.FindOne(r.Context(), bson.M{"email": reqBody.Email}).Decode(&user)
 		if err != nil {
 			http.Error(w, "Account not found.", http.StatusNotFound)
 			return
@@ -96,7 +95,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 		}
 
 		newRefreshTokens = append(newRefreshTokens, newRefreshToken)
-		_, err = collection.UpdateOne(context.Background(), bson.M{"email": user.Email}, bson.M{"$set": bson.M{"refreshToken": newRefreshTokens}})
+		_, err = collection.UpdateOne(r.Context(), bson.M{"email": user.Email}, bson.M{"$set": bson.M{"refreshToken": newRefreshTokens}})
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
@@ -111,7 +110,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			MaxAge:   24 * 60 * 60,
 		})
 
-		response := auth.Response{
+		response := types.Response{
 			AccessToken: accessToken,
 			Email:       user.Email,
 			Username:    user.Username,
