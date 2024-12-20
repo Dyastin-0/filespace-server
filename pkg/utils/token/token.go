@@ -9,7 +9,7 @@ import (
 	user "filespace/internal/models/user"
 )
 
-func Generate(user user.Model, secret string, expiration time.Duration) (string, error) {
+func Generate(user *user.Model, secret string, expiration time.Duration) (string, error) {
 	claims := authTypes.Claims{
 		User: struct {
 			Username string   `json:"username"`

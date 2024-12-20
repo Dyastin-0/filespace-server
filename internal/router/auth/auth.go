@@ -15,6 +15,7 @@ func Auth(client *mongo.Client) *chi.Mux {
 	router.Post("/sign-up", auth.Signup(client))
 	router.Post("/refresh", auth.Refresh(client))
 	router.Post("/verify", auth.Verify(client))
+	router.Post("/send-verification", auth.SendVerification(client))
 
 	return router
 }

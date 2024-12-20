@@ -51,13 +51,13 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		accessToken, err := token.Generate(user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
+		accessToken, err := token.Generate(&user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
-		newRefreshToken, err := token.Generate(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
+		newRefreshToken, err := token.Generate(&user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
