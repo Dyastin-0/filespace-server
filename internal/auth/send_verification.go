@@ -53,8 +53,8 @@ func SendVerification(client *mongo.Client) http.HandlerFunc {
 			Body: templates.Default(
 				"Email Verification",
 				"Click the link below to verify your email.",
-				"Verify Email",
-				os.Getenv("BASE_CLIENT_URL")+"/auth/verify?t="+verificationToken),
+				os.Getenv("BASE_CLIENT_URL")+"/auth/verify?t="+verificationToken,
+				"Verify Email"),
 		}
 
 		err = mail.SendHTMLEmail(&options)
