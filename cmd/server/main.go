@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	middleware "filespace/internal/middlewares"
+	middleware "filespace/internal/middleware"
 	router "filespace/internal/router/auth"
 )
 

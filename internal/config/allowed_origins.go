@@ -1,6 +1,6 @@
-package configs
+package config
 
-var AllowedOrigin = []string{
+var AllowedOrigins = []string{
 	"http://localhost:5173",
 	"https://filespace.dyastin.tech",
 }

@@ -11,9 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	authTypes "filespace/internal/auth/types"
-	user "filespace/internal/models/user"
-	token "filespace/pkg/utils/token"
+	authTypes "filespace/internal/auth/type"
+	user "filespace/internal/model/user"
+	token "filespace/pkg/util/token"
 )
 
 func Refresh(client *mongo.Client) http.HandlerFunc {

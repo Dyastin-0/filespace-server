@@ -10,13 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	auth "filespace/internal/auth/types"
-	user "filespace/internal/models/user"
+	auth "filespace/internal/auth/type"
+	user "filespace/internal/model/user"
 	mail "filespace/pkg/mail"
-	mailTemplate "filespace/pkg/mail/templates"
-	mailTypes "filespace/pkg/mail/types"
-	hash "filespace/pkg/utils/hash"
-	token "filespace/pkg/utils/token"
+	mailTemplate "filespace/pkg/mail/template"
+	mailType "filespace/pkg/mail/type"
+	hash "filespace/pkg/util/hash"
+	token "filespace/pkg/util/token"
 )
 
 func Signup(client *mongo.Client) http.HandlerFunc {
@@ -81,10 +81,10 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		options := mailTypes.Message{
+		options := mailType.Message{
 			To:          user.Email,
 			Subject:     "Verify your account",
-			ContentType: mailTypes.HTMLTextEmail,
+			ContentType: mailType.HTMLTextEmail,
 			Body: mailTemplate.Default(
 				"Verification",
 				"Hi, "+user.Username+". Thank you for signing up. Please verify your account by clicking the link below. if you did not sign up, please ignore this email.",

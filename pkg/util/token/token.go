@@ -5,8 +5,8 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 
-	authTypes "filespace/internal/auth/types"
-	user "filespace/internal/models/user"
+	authTypes "filespace/internal/auth/type"
+	user "filespace/internal/model/user"
 )
 
 func Generate(user *user.Model, secret string, expiration time.Duration) (string, error) {

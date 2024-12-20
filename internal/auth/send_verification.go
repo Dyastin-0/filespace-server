@@ -9,12 +9,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	types "filespace/internal/auth/types"
-	usr "filespace/internal/models/user"
+	types "filespace/internal/auth/type"
+	usr "filespace/internal/model/user"
 	mail "filespace/pkg/mail"
-	templates "filespace/pkg/mail/templates"
-	mailTypes "filespace/pkg/mail/types"
-	token "filespace/pkg/utils/token"
+	template "filespace/pkg/mail/template"
+	mailType "filespace/pkg/mail/type"
+	token "filespace/pkg/util/token"
 )
 
 func SendVerification(client *mongo.Client) http.HandlerFunc {
@@ -46,11 +46,11 @@ func SendVerification(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		options := mailTypes.Message{
+		options := mailType.Message{
 			To:          reqBody.Email,
 			Subject:     "Email Verification",
-			ContentType: mailTypes.HTMLTextEmail,
-			Body: templates.Default(
+			ContentType: mailType.HTMLTextEmail,
+			Body: template.Default(
 				"Email Verification",
 				"Click the link below to verify your email.",
 				os.Getenv("BASE_CLIENT_URL")+"/auth/verify?t="+verificationToken,

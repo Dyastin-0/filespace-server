@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	mailTemplate "filespace/pkg/mail/templates"
-	types "filespace/pkg/mail/types"
+	mailTemplate "filespace/pkg/mail/template"
+	types "filespace/pkg/mail/type"
 
 	godotenv "github.com/joho/godotenv"
 )

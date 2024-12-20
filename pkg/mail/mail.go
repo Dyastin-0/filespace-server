@@ -7,9 +7,9 @@ import (
 	"os"
 	"sync"
 
-	types "filespace/pkg/mail/types"
+	types "filespace/pkg/mail/type"
 
-	safeHTML "filespace/pkg/utils/html"
+	safeHTML "filespace/pkg/util/html"
 
 	mail "github.com/wneessen/go-mail"
 )

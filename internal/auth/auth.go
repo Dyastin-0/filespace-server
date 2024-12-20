@@ -11,10 +11,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	types "filespace/internal/auth/types"
-	user "filespace/internal/models/user"
-	hash "filespace/pkg/utils/hash"
-	token "filespace/pkg/utils/token"
+	types "filespace/internal/auth/type"
+	user "filespace/internal/model/user"
+	hash "filespace/pkg/util/hash"
+	token "filespace/pkg/util/token"
 )
 
 func Handler(client *mongo.Client) http.HandlerFunc {

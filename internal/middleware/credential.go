@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"filespace/internal/configs"
+	"filespace/internal/config"
 	"net/http"
 )
 
@@ -9,7 +9,7 @@ func Credential(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 		isAllowed := false
-		for _, allowedOrigin := range configs.AllowedOrigin {
+		for _, allowedOrigin := range config.AllowedOrigins {
 			if origin == allowedOrigin {
 				isAllowed = true
 				break

@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 
-	types "filespace/internal/auth/types"
+	types "filespace/internal/auth/type"
 )
 
 func JWT(next http.Handler) http.Handler {

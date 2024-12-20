@@ -12,9 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	types "filespace/internal/auth/types"
-	usr "filespace/internal/models/user"
-	token "filespace/pkg/utils/token"
+	types "filespace/internal/auth/type"
+	usr "filespace/internal/model/user"
+	token "filespace/pkg/util/token"
 )
 
 func Verify(client *mongo.Client) http.HandlerFunc {
