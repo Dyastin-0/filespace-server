@@ -67,7 +67,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 			Roles:    []string{"122602"},
 		}
 
-		verificationToken, err := token.Generate(user, os.Getenv("EMAIL_TOKEN_KEY"), 5*time.Minute)
+		verificationToken, err := token.Generate(user, os.Getenv("EMAIL_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
@@ -88,7 +88,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 			Body: mailTemplate.Default(
 				"Verification",
 				"Hi, "+user.Username+". Thank you for signing up. Please verify your account by clicking the link below. if you did not sign up, please ignore this email.",
-				os.Getenv("BASE_CLIENT_URL")+"/account/verification?t="+verificationToken,
+				os.Getenv("BASE_CLIENT_URL")+"/auth/verify?t="+verificationToken,
 				"Verify Account"),
 		}
 

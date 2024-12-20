@@ -1,11 +1,11 @@
-package credential
+package middlewares
 
 import (
 	"filespace/internal/configs"
 	"net/http"
 )
 
-func Handler(next http.Handler) http.Handler {
+func Credential(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 		isAllowed := false

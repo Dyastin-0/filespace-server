@@ -13,7 +13,7 @@ import (
 
 	types "filespace/internal/auth/types"
 	user "filespace/internal/models/user"
-	"filespace/pkg/utils/hash"
+	hash "filespace/pkg/utils/hash"
 	token "filespace/pkg/utils/token"
 )
 

@@ -2,11 +2,12 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -50,6 +51,7 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		}
 
 		if err != mongo.ErrNoDocuments && err != nil {
+			fmt.Println(err)
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
@@ -58,24 +60,30 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		err = collection.FindOne(r.Context(), filter).Decode(&user)
 
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
 		accessToken, err := token.Generate(user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
 		refreshToken, err := token.Generate(user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
-		_, err = collection.UpdateOne(r.Context(), bson.M{"email": user.Email}, bson.M{"$set": bson.M{"refreshToken": []string{refreshToken}}})
+		filter = bson.M{"email": user.Email}
+		update = bson.M{"$set": bson.M{"refreshToken": refreshToken}}
+		_, err = collection.UpdateOne(r.Context(), filter, update)
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
@@ -95,6 +103,7 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 			Username:    user.Username,
 			Roles:       user.Roles,
 		}
+
 		json.NewEncoder(w).Encode(response)
 	}
 }

@@ -3,7 +3,7 @@ package utils
 import (
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 
 	authTypes "filespace/internal/auth/types"
 	user "filespace/internal/models/user"
@@ -23,10 +23,11 @@ func Generate(user user.Model, secret string, expiration time.Duration) (string,
 			ID:       user.ID,
 		},
 		Exp: time.Now().Add(expiration).Unix(),
-		StandardClaims: jwt.StandardClaims{
-			Issuer:   "Filespace",
-			Subject:  user.ID,
-			IssuedAt: time.Now().Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    "Filespace",
+			Subject:   user.ID,
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiration)),
 		},
 	}
 

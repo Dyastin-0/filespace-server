@@ -10,13 +10,12 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	credential "filespace/internal/credential"
+	middleware "filespace/internal/middlewares"
 	router "filespace/internal/router/auth"
 )
 
@@ -37,7 +36,7 @@ func main() {
 	MainRouter := chi.NewRouter()
 
 	MainRouter.Use(middleware.Logger)
-	MainRouter.Use(credential.Handler)
+	MainRouter.Use(middleware.Credential)
 	MainRouter.Use(render.SetContentType(render.ContentTypeJSON))
 
 	MainRouter.Mount("/api/"+version+"/auth", router.Auth(client))

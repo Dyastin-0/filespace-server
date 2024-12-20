@@ -49,7 +49,7 @@ func TestSendPlainTextEmail(t *testing.T) {
 	}
 }
 
-func TestHTMLEmail(t *testing.T) {
+func TestSendHTMLEmail(t *testing.T) {
 	tests := []struct {
 		options *types.Message
 		wantErr bool

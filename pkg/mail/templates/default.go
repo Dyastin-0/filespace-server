@@ -1,4 +1,4 @@
-package mail
+package templates
 
 import (
 	"fmt"
@@ -17,13 +17,10 @@ func Default(title string, message string, link string, linkTitle string) string
 	linkSection := ""
 	if link != "" {
 		linkSection = fmt.Sprintf(`
-        <tr>
-            <td align="center" style="padding: 20px 0;">
-                <a href="%s" style="display: inline-block; font-size: 14px; color: #ffffff; background-color: #2b333e; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                    %s
-                </a>
-            </td>
-        </tr>`, link, escapedLinkTitle)
+            <a href="%s" style="display: inline-block; font-size: 14px; color: #ffffff; background-color: #007bff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                %s
+            </a>`, link, escapedLinkTitle,
+		)
 	}
 
 	return fmt.Sprintf(`
@@ -33,53 +30,80 @@ func Default(title string, message string, link string, linkTitle string) string
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>%s</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                color: #333333;
+                background-color: #f8f9fa;
+            }
+            .container {
+                max-width: 400px;
+                margin: 14px auto;
+                padding: 14px;
+                background-color: #ffffff;
+                border: 1px solid #dddddd;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                text-align: center;
+                padding: 10px 0;
+            }
+            .header h1 {
+                display: inline;
+                font-size: 24px;
+                font-weight: bold;
+                color: #007bff;
+                margin: 0;
+            }
+            .header h1 span {
+                color: #333333;
+            }
+            .content {
+                text-align: center;
+                padding: 10px 0;
+            }
+            .content h2 {
+                font-size: 18px;
+                color: #333333;
+                margin: 0;
+            }
+            .content p {
+                font-size: 14px;
+                color: #666666;
+                line-height: 1.5;
+                margin: 10px 0;
+            }
+            .footer {
+                text-align: center;
+                padding: 10px 0;
+                font-size: 12px;
+                color: #666666;
+            }
+            .footer a {
+                color: #007bff;
+                text-decoration: none;
+            }
+        </style>
     </head>
-    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; color: #ffffff;">
-        <table width="100%%" cellpadding="0" cellspacing="0" border="0" style="background-color: #212830; padding: 20px;">
-            <tr>
-                <td align="center">
-                    <table width="100%%" cellpadding="0" cellspacing="0" border="0" style="max-width: 400px; background-color: #1a2028; border-radius: 10px; padding: 20px;">
-                        
-                        <!-- Logo Section -->
-                        <tr>
-                            <td align="center">
-                                <h1 style="display: inline; font-size: 24px; font-weight: bold; color: #4daafc; margin: 0;">File</h1>
-                                <h1 style="display: inline; font-size: 24px; font-weight: bold; color: #ffffff; margin: 0;">Space</h1>
-                            </td>
-                        </tr>
-
-                        <!-- Title Section -->
-                        <tr>
-                            <td align="center" style="padding: 20px 0 10px 0;">
-                                <h2 style="font-size: 18px; color: #f2f2f3; margin: 0; white-space: nowrap;">%s</h2>
-                            </td>
-                        </tr>
-
-                        <!-- Message Section -->
-                        <tr>
-                            <td align="center" style="padding: 10px 0 20px 0;">
-                                <p style="font-size: 14px; color: #cacaca; line-height: 1.5; margin: 0; white-space: normal;">
-                                    %s
-                                </p>
-                            </td>
-                        </tr>
-
-                        <!-- Call-to-Action Button -->
-                        %s
-
-                        <!-- Footer Section -->
-                        <tr>
-                            <td align="center" style="padding: 20px 0 0 0;">
-                                <p style="font-size: 12px; color: #cacaca; line-height: 1.5; margin: 0;">
-                                    If you have any questions, contact us at
-                                    <a href="mailto:support@filespace.dyastin.tech" style="color: #4daafc; text-decoration: none;">support@filespace.dyastin.tech</a>.
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1><span style="color: #007bff;">File</span><span style="color: #333333;">space</span></h1>
+            </div>
+            <div class="content">
+                <h2>%s</h2>
+                <p>%s</p>
+                %s
+            </div>
+            <div class="footer">
+                <p>If you have any questions, contact us at
+                    <a href="mailto:support@filespace.dyastin.tech">support@filespace.dyastin.tech</a>.
+                </p>
+            </div>
+        </div>
     </body>
     </html>
     `, escapedTitle, escapedTitle, escapedMessage, linkSection)

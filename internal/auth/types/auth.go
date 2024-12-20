@@ -1,6 +1,6 @@
 package types
 
-import "github.com/dgrijalva/jwt-go"
+import "github.com/golang-jwt/jwt/v5"
 
 type Body struct {
 	Email    string `json:"email"`
@@ -22,5 +22,5 @@ type Claims struct {
 		ID       string   `json:"_id"`
 	} `json:"user"`
 	Exp int64 `json:"exp"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
