@@ -22,7 +22,7 @@ func Recover(client *mongo.Client) http.HandlerFunc {
 
 		err := json.NewDecoder(r.Body).Decode(&reqBody)
 		if err != nil {
-			http.Error(w, "Incorrect request body.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Invalid format.", http.StatusBadRequest)
 			return
 		}
 
