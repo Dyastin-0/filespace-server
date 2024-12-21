@@ -112,6 +112,12 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 
 		response := authTypes.RefreshResponse{
 			AccessToken: accessToken,
+			User: authTypes.User{
+				Username: user.Username,
+				Email:    user.Email,
+				Roles:    user.Roles,
+				ImageURL: user.ImageURL,
+			},
 		}
 
 		json.NewEncoder(w).Encode(response)
