@@ -12,14 +12,16 @@ import (
 	usr "filespace/internal/model/user"
 )
 
-func Logout(client *mongo.Client) http.HandlerFunc {
+func Signout(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		token := r.Header.Get("Authorization")
+		cookie, err := r.Cookie("jwt")
 
-		if token == "" {
+		if err != nil {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
+
+		token := cookie.Value
 
 		claims := types.Claims{}
 		jwt.ParseWithClaims(token, &claims, func(token *jwt.Token) (interface{}, error) {
@@ -29,7 +31,7 @@ func Logout(client *mongo.Client) http.HandlerFunc {
 		collection := client.Database("test").Collection("users")
 		filter := bson.M{"email": claims.User.Email}
 		user := usr.Model{}
-		err := collection.FindOne(r.Context(), filter).Decode(&user)
+		err = collection.FindOne(r.Context(), filter).Decode(&user)
 
 		if err != nil {
 			http.SetCookie(w, &http.Cookie{
