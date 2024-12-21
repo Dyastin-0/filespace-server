@@ -45,7 +45,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		err = hash.Compare(reqBody.Password, user.Password)
+		err = hash.Compare(user.Password, reqBody.Password)
 		if err != nil {
 			http.Error(w, "Invalid credentials.", http.StatusUnauthorized)
 			return

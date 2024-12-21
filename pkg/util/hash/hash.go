@@ -23,7 +23,7 @@ func Generate(password string) (string, error) {
 	return string(hashedBytes), nil
 }
 
-func Compare(hashedPassword, password string) error {
+func Compare(hashedPassword string, password string) error {
 	if hashedPassword == "" || password == "" {
 		return errors.New("hashed password and password cannot be empty")
 	}

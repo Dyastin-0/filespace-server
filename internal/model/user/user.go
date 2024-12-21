@@ -9,11 +9,11 @@ type Model struct {
 	Username           string               `bson:"username"`
 	Password           string               `bson:"password"`
 	Email              string               `bson:"email"`
-	RefreshToken       []string             `bson:"refreshToken"`
-	AccessToken        string               `bson:"accessToken"`
-	VerificationToken  string               `bson:"verificationToken"`
-	PasswordResetToken string               `bson:"passwordResetToken"`
-	RecoveryToken      string               `bson:"recoveryToken"`
+	RefreshToken       []string             `bson:"refreshToken,omitempty"`
+	AccessToken        string               `bson:"accessToken,omitempty"`
+	VerificationToken  string               `bson:"verificationToken,omitempty"`
+	PasswordResetToken string               `bson:"passwordResetToken,omitempty"`
+	RecoveryToken      string               `bson:"recoveryToken,omitempty"`
 	Verified           bool                 `bson:"verified"`
 	Roles              []string             `bson:"roles"`
 	ImageURL           string               `bson:"profileImageURL"`

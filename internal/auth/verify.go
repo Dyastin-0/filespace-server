@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -40,51 +39,48 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		}
 
 		collection := client.Database("test").Collection("users")
+
 		update := bson.M{"$set": bson.M{"verified": true, "verificationToken": ""}}
-		filter := bson.M{"email": claims.User.Email}
+		filter := bson.M{"email": claims.User.Email, "verificationToken": reqQuery.Token}
 		ops := options.Update().SetUpsert(true)
 		res, err := collection.UpdateOne(r.Context(), filter, update, ops)
 
 		if res == nil {
-			http.Error(w, "Account not found.", http.StatusNotFound)
+			http.Error(w, "Token is already used.", http.StatusNotFound)
 			return
 		}
 
 		if err != mongo.ErrNoDocuments && err != nil {
-			fmt.Println(err)
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
 
 		user := usr.Model{}
+		filter = bson.M{"email": claims.User.Email}
 		err = collection.FindOne(r.Context(), filter).Decode(&user)
 
 		if err != nil {
-			fmt.Println(err)
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error..", http.StatusInternalServerError)
 			return
 		}
 
 		accessToken, err := token.Generate(&user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
-			fmt.Println(err)
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error...", http.StatusInternalServerError)
 			return
 		}
 
 		refreshToken, err := token.Generate(&user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
-			fmt.Println(err)
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error....", http.StatusInternalServerError)
 			return
 		}
 
 		filter = bson.M{"email": user.Email}
-		update = bson.M{"$set": bson.M{"refreshToken": refreshToken}}
+		update = bson.M{"$set": bson.M{"refreshToken": []string{refreshToken}}}
 		_, err = collection.UpdateOne(r.Context(), filter, update)
 		if err != nil {
-			fmt.Println(err)
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error.....", http.StatusInternalServerError)
 			return
 		}
 

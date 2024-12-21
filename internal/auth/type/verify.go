@@ -1,5 +1,5 @@
 package types
 
 type VerifyQuery struct {
-	Token string `json:"token"`
+	Token string `json:"t"`
 }

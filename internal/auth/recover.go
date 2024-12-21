@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -54,7 +53,6 @@ func Recover(client *mongo.Client) http.HandlerFunc {
 		}
 
 		if err != mongo.ErrNoDocuments && err != nil {
-			fmt.Println(err)
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
 			return
 		}
