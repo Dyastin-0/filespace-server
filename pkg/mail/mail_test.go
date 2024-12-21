@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	mailTemplate "filespace/pkg/mail/template"
-	types "filespace/pkg/mail/type"
 
 	godotenv "github.com/joho/godotenv"
 )
@@ -24,22 +23,22 @@ func TestMain(m *testing.M) {
 
 func TestSendPlainTextEmail(t *testing.T) {
 	tests := []struct {
-		options *types.Message
+		options *Message
 		wantErr bool
 	}{
-		{&types.Message{
+		{&Message{
 			To:      os.Getenv("TEST_EMAIL"),
 			Subject: "", Body: "",
-			ContentType: types.PlainTextEmail}, true},
-		{&types.Message{
+			ContentType: PlainTextEmail}, true},
+		{&Message{
 			To:          os.Getenv("TEST_EMAIL"),
 			Subject:     "Test",
 			Body:        "Test",
-			ContentType: types.PlainTextEmail}, false},
-		{&types.Message{
+			ContentType: PlainTextEmail}, false},
+		{&Message{
 			To:      os.Getenv("TEST_EMAIL"),
 			Subject: "Test", Body: "",
-			ContentType: types.PlainTextEmail}, true},
+			ContentType: PlainTextEmail}, true},
 	}
 
 	for _, tt := range tests {
@@ -51,18 +50,18 @@ func TestSendPlainTextEmail(t *testing.T) {
 
 func TestSendHTMLEmail(t *testing.T) {
 	tests := []struct {
-		options *types.Message
+		options *Message
 		wantErr bool
 	}{
-		{&types.Message{
+		{&Message{
 			To:      os.Getenv("TEST_EMAIL"),
 			Subject: "", Body: "",
-			ContentType: types.PlainTextEmail}, true},
-		{&types.Message{
+			ContentType: PlainTextEmail}, true},
+		{&Message{
 			To:      os.Getenv("TEST_EMAIL"),
 			Subject: "Test", Body: "Test",
-			ContentType: types.HTMLTextEmail}, true},
-		{&types.Message{
+			ContentType: HTMLTextEmail}, true},
+		{&Message{
 			To:      os.Getenv("TEST_EMAIL"),
 			Subject: "Test",
 			Body: mailTemplate.Default("Test",
@@ -70,7 +69,7 @@ func TestSendHTMLEmail(t *testing.T) {
 				"test.com",
 				"Test Link",
 			),
-			ContentType: types.HTMLTextEmail}, false},
+			ContentType: HTMLTextEmail}, false},
 	}
 
 	for _, tt := range tests {

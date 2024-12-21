@@ -13,7 +13,6 @@ import (
 	usr "filespace/internal/model/user"
 	mail "filespace/pkg/mail"
 	template "filespace/pkg/mail/template"
-	mailType "filespace/pkg/mail/type"
 	token "filespace/pkg/util/token"
 )
 
@@ -46,10 +45,10 @@ func SendVerification(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		options := mailType.Message{
+		options := mail.Message{
 			To:          reqBody.Email,
 			Subject:     "Email Verification",
-			ContentType: mailType.HTMLTextEmail,
+			ContentType: mail.HTMLTextEmail,
 			Body: template.Default(
 				"Email Verification",
 				"Click the link below to verify your email.",

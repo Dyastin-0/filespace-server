@@ -7,8 +7,6 @@ import (
 	"os"
 	"sync"
 
-	types "filespace/pkg/mail/type"
-
 	safeHTML "filespace/pkg/util/html"
 
 	mail "github.com/wneessen/go-mail"
@@ -37,7 +35,7 @@ func getClient() (*mail.Client, error) {
 	return client, err
 }
 
-func newMessage(options *types.Message) (*mail.Msg, error) {
+func newMessage(options *Message) (*mail.Msg, error) {
 	message := mail.NewMsg()
 	if err := message.From(os.Getenv("SERVER_EMAIL")); err != nil {
 		return nil, err
@@ -65,7 +63,7 @@ func newMessage(options *types.Message) (*mail.Msg, error) {
 	return message, nil
 }
 
-func SendPlainTextEmail(options *types.Message) error {
+func SendPlainTextEmail(options *Message) error {
 	client, err := getClient()
 	if err != nil {
 		return err
@@ -88,7 +86,7 @@ func SendPlainTextEmail(options *types.Message) error {
 	return nil
 }
 
-func SendHTMLEmail(options *types.Message) error {
+func SendHTMLEmail(options *Message) error {
 	client, err := getClient()
 	if err != nil {
 		return err
