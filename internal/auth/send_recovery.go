@@ -40,7 +40,12 @@ func SendRecovery(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		token, err := token.Generate(&user, os.ExpandEnv("EMAIL_TOKEN_KEY"), time.Hour*24)
+		if !user.Verified {
+			http.Error(w, "Account not verified.", http.StatusUnauthorized)
+			return
+		}
+
+		token, err := token.Generate(&user, os.Getenv("EMAIL_TOKEN_KEY"), time.Hour*24)
 
 		if err != nil {
 			http.Error(w, "Internal server error.", http.StatusInternalServerError)
@@ -49,11 +54,11 @@ func SendRecovery(client *mongo.Client) http.HandlerFunc {
 
 		options := mail.Message{
 			To:          reqBody.Email,
-			Subject:     "Password recovery",
+			Subject:     "Password Recovery",
 			ContentType: mail.HTMLTextEmail,
 			Body: mailTemplate.Default(
 				"Password Recovery",
-				"Click the link below to recover your password",
+				"Click the link below to recover your password.This link will expire in 15 minutes. If you did not request a password recovery, you can safely ignore this email.",
 				os.Getenv("BASE_CLIENT_URL")+"/auth/recover?t="+token,
 				"Recover password",
 			),
