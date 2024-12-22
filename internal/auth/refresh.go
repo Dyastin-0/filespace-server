@@ -82,7 +82,7 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		accessToken, err := token.Generate(&user, os.Getenv("ACCESS_TOKEN_SECRET"), 15*time.Minute)
+		accessToken, err := token.Generate(&user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
@@ -113,10 +113,11 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 		response := authTypes.RefreshResponse{
 			AccessToken: accessToken,
 			User: authTypes.User{
-				Username: user.Username,
-				Email:    user.Email,
-				Roles:    user.Roles,
-				ImageURL: user.ImageURL,
+				Username:    user.Username,
+				Email:       user.Email,
+				Roles:       user.Roles,
+				ImageURL:    user.ImageURL,
+				UsedStorage: user.UsedStorage,
 			},
 		}
 

@@ -11,12 +11,7 @@ import (
 
 func Generate(user *user.Model, secret string, expiration time.Duration) (string, error) {
 	claims := authTypes.Claims{
-		User: struct {
-			Username string   `json:"username"`
-			Email    string   `json:"email"`
-			Roles    []string `json:"roles"`
-			ID       string   `json:"_id"`
-		}{
+		User: authTypes.User{
 			Username: user.Username,
 			Email:    user.Email,
 			Roles:    user.Roles,

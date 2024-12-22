@@ -15,8 +15,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"cloud.google.com/go/storage"
+
 	middleware "filespace/internal/middleware"
-	router "filespace/internal/router/auth"
+	router "filespace/internal/router"
 )
 
 func main() {
@@ -26,9 +28,14 @@ func main() {
 
 	version := os.Getenv("VERSION")
 
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGODB_URI")))
+	mongoClient, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGODB_URI")))
 	if err != nil {
 		panic(err)
+	}
+
+	storageClient, err := storage.NewClient(context.Background())
+	if err != nil {
+		log.Fatal("Failed to create storage client: ", err)
 	}
 
 	fmt.Println("Connected to MongoDB.")
@@ -39,7 +46,8 @@ func main() {
 	MainRouter.Use(middleware.Credential)
 	MainRouter.Use(render.SetContentType(render.ContentTypeJSON))
 
-	MainRouter.Mount("/api/"+version+"/auth", router.Auth(client))
+	MainRouter.Mount("/api/"+version+"/auth", router.Auth(mongoClient))
+	MainRouter.Mount("/api/"+version+"/files", router.File(storageClient, mongoClient))
 
 	port := os.Getenv("PORT")
 	if err := http.ListenAndServe(":"+port, MainRouter); err != nil {

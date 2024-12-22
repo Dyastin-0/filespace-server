@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -18,15 +20,21 @@ func JWT(next http.Handler) http.Handler {
 			return
 		}
 
+		token = token[7:]
+
 		claims := &types.Claims{}
 		_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("EMAIL_TOKEN_KEY")), nil
+			return []byte(os.Getenv("ACCESS_TOKEN_KEY")), nil
 		})
 
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, "Forbidden.", http.StatusForbidden)
 			return
 		}
+
+		ctx := context.WithValue(r.Context(), "claims", claims)
+		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)
 	})

@@ -23,7 +23,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 
 		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 			log.Fatal(err)
-			http.Error(w, "Bad request.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Invalid format.", http.StatusBadRequest)
 			return
 		}
 
