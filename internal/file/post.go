@@ -83,6 +83,7 @@ func Post(storageClient *storage.Client, mongoClient *mongo.Client) http.Handler
 				http.Error(w, "Error updating user storage", http.StatusInternalServerError)
 				return
 			}
+
 		} else if folder != "" {
 			folderName := fmt.Sprintf("%s/%s/", id, folder)
 			if path != "" {
