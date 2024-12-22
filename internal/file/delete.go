@@ -56,11 +56,6 @@ func Delete(storageClient *storage.Client, mongoClient *mongo.Client) http.Handl
 						return
 					}
 				}
-
-				if err := obj.Delete(r.Context()); err != nil {
-					http.Error(w, "Failed to delete folder", http.StatusInternalServerError)
-					return
-				}
 			} else {
 				if err := obj.Delete(r.Context()); err != nil {
 					http.Error(w, "Failed to delete file", http.StatusInternalServerError)
