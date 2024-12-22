@@ -2,7 +2,7 @@ package file
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"cloud.google.com/go/storage"
@@ -48,7 +48,7 @@ func Post(storageClient *storage.Client, mongoClient *mongo.Client) http.Handler
 				writer := newFile.NewWriter(r.Context())
 				writer.ContentType = fileHeader.Header.Get("Content-Type")
 
-				fileBytes, err := ioutil.ReadAll(file)
+				fileBytes, err := io.ReadAll(file)
 				if err != nil {
 					http.Error(w, "Error reading file", http.StatusInternalServerError)
 					return
