@@ -19,7 +19,7 @@ func Get(client *storage.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value("claims").(*types.Claims)
 		if !ok || claims == nil {
-			http.Error(w, "Unauthorized.", http.StatusUnauthorized)
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 		id := claims.User.ID
@@ -37,7 +37,7 @@ func Get(client *storage.Client) http.HandlerFunc {
 		for {
 			attrs, err := it.Next()
 			if err == storage.ErrBucketNotExist {
-				http.Error(w, "Internal server error.", http.StatusInternalServerError)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
 			if err != nil {
@@ -49,7 +49,7 @@ func Get(client *storage.Client) http.HandlerFunc {
 				Expires: time.Now().Add(15 * time.Minute),
 			})
 			if err != nil {
-				http.Error(w, "Failed to generate signed URL.", http.StatusInternalServerError)
+				http.Error(w, "Failed to generate signed URL", http.StatusInternalServerError)
 				return
 			}
 

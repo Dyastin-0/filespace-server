@@ -21,12 +21,12 @@ func Recover(client *mongo.Client) http.HandlerFunc {
 
 		err := json.NewDecoder(r.Body).Decode(&reqBody)
 		if err != nil {
-			http.Error(w, "Bad request. Invalid format.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Invalid format", http.StatusBadRequest)
 			return
 		}
 
 		if reqBody.Token == "" || reqBody.NewPassword == "" {
-			http.Error(w, "Bad request. Missing required fields.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Missing required fields", http.StatusBadRequest)
 			return
 		}
 
@@ -36,7 +36,7 @@ func Recover(client *mongo.Client) http.HandlerFunc {
 		})
 
 		if err != nil {
-			http.Error(w, "Invalid or expired token.", http.StatusUnauthorized)
+			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
 			return
 		}
 
@@ -48,12 +48,12 @@ func Recover(client *mongo.Client) http.HandlerFunc {
 		res, err := collection.UpdateOne(r.Context(), filter, update)
 
 		if res == nil {
-			http.Error(w, "Account not found.", http.StatusNotFound)
+			http.Error(w, "Account not found", http.StatusNotFound)
 			return
 		}
 
 		if err != mongo.ErrNoDocuments && err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 

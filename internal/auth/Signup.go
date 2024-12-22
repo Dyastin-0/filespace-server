@@ -23,12 +23,12 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 		var reqBody = auth.SignupBody{}
 
 		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
-			http.Error(w, "Bad request. Invalid format.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Invalid format", http.StatusBadRequest)
 			return
 		}
 
 		if reqBody.Email == "" || reqBody.Password == "" || reqBody.Username == "" {
-			http.Error(w, "Bad request. Missing required fields.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Missing required fields", http.StatusBadRequest)
 			return
 		}
 
@@ -36,25 +36,25 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 		err := collection.FindOne(context.Background(), bson.M{"email": reqBody.Email}).Err()
 
 		if err == nil {
-			http.Error(w, "Email already used.", http.StatusConflict)
+			http.Error(w, "Email already used", http.StatusConflict)
 			return
 		} else if err != mongo.ErrNoDocuments {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
 		err = collection.FindOne(context.Background(), bson.M{"username": reqBody.Username}).Err()
 		if err == nil {
-			http.Error(w, "Username already used.", http.StatusConflict)
+			http.Error(w, "Username already used", http.StatusConflict)
 			return
 		} else if err != mongo.ErrNoDocuments {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
 		hashedPassword, herr := hash.Generate(reqBody.Password)
 		if herr != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -68,7 +68,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 
 		verificationToken, err := token.Generate(&user, os.Getenv("EMAIL_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -76,7 +76,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 
 		_, err = collection.InsertOne(context.Background(), user)
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -93,7 +93,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 
 		err = mail.SendHTMLEmail(&options)
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusCreated)

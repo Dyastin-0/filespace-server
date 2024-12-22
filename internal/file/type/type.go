@@ -1,4 +1,4 @@
-package file
+package types
 
 import "time"
 
@@ -11,9 +11,4 @@ type Metadata struct {
 	ContentType string
 	Created     time.Time
 	Type        string
-}
-
-type PostBody struct {
-	Path string `json:"path"`
-	Size int64  `json:"size"`
 }

@@ -23,12 +23,12 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 
 		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 			log.Fatal(err)
-			http.Error(w, "Bad request. Invalid format.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Invalid format", http.StatusBadRequest)
 			return
 		}
 
 		if reqBody.Email == "" || reqBody.Password == "" {
-			http.Error(w, "Bad request. Missing required fields.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Missing required fields", http.StatusBadRequest)
 			return
 		}
 
@@ -36,30 +36,30 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 		var user user.Model
 		err := collection.FindOne(r.Context(), bson.M{"email": reqBody.Email}).Decode(&user)
 		if err != nil {
-			http.Error(w, "Account not found.", http.StatusNotFound)
+			http.Error(w, "Account not found", http.StatusNotFound)
 			return
 		}
 
 		if !user.Verified {
-			http.Error(w, "Verify your account.", http.StatusForbidden)
+			http.Error(w, "Verify your account", http.StatusForbidden)
 			return
 		}
 
 		err = hash.Compare(user.Password, reqBody.Password)
 		if err != nil {
-			http.Error(w, "Invalid credentials.", http.StatusUnauthorized)
+			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 			return
 		}
 
 		accessToken, err := token.Generate(&user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
 		newRefreshToken, err := token.Generate(&user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -97,7 +97,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 		newRefreshTokens = append(newRefreshTokens, newRefreshToken)
 		_, err = collection.UpdateOne(r.Context(), bson.M{"email": user.Email}, bson.M{"$set": bson.M{"refreshToken": newRefreshTokens}})
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 

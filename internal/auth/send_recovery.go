@@ -22,12 +22,12 @@ func SendRecovery(client *mongo.Client) http.HandlerFunc {
 
 		err := json.NewDecoder(r.Body).Decode(&reqBody)
 		if err != nil {
-			http.Error(w, "Bad request. Invalid format.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Invalid format", http.StatusBadRequest)
 			return
 		}
 
 		if reqBody.Email == "" {
-			http.Error(w, "Bad request. Missing required fields.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Missing required fields", http.StatusBadRequest)
 			return
 		}
 
@@ -36,19 +36,19 @@ func SendRecovery(client *mongo.Client) http.HandlerFunc {
 		err = collection.FindOne(r.Context(), bson.M{"email": reqBody.Email}).Decode(&user)
 
 		if err != nil {
-			http.Error(w, "Account not found.", http.StatusNotFound)
+			http.Error(w, "Account not found", http.StatusNotFound)
 			return
 		}
 
 		if !user.Verified {
-			http.Error(w, "Account not verified.", http.StatusUnauthorized)
+			http.Error(w, "Account not verified", http.StatusUnauthorized)
 			return
 		}
 
 		token, err := token.Generate(&user, os.Getenv("EMAIL_TOKEN_KEY"), time.Hour*24)
 
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -66,7 +66,7 @@ func SendRecovery(client *mongo.Client) http.HandlerFunc {
 
 		err = mail.SendHTMLEmail(&options)
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 

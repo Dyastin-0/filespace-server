@@ -24,7 +24,7 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		reqQuery.Token = query.Get("t")
 
 		if reqQuery.Token == "" {
-			http.Error(w, "Bad request. Missing required fields.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Missing required fields", http.StatusBadRequest)
 			return
 		}
 
@@ -34,7 +34,7 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		})
 
 		if err != nil {
-			http.Error(w, "Invalid or expired token.", http.StatusUnauthorized)
+			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
 			return
 		}
 
@@ -46,12 +46,12 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		res, err := collection.UpdateOne(r.Context(), filter, update, ops)
 
 		if res == nil {
-			http.Error(w, "Token is already used.", http.StatusNotFound)
+			http.Error(w, "Token is already used", http.StatusNotFound)
 			return
 		}
 
 		if err != mongo.ErrNoDocuments && err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -60,19 +60,19 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		err = collection.FindOne(r.Context(), filter).Decode(&user)
 
 		if err != nil {
-			http.Error(w, "Internal server error..", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
 		accessToken, err := token.Generate(&user, os.Getenv("ACCESS_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
-			http.Error(w, "Internal server error...", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
 		refreshToken, err := token.Generate(&user, os.Getenv("REFRESH_TOKEN_KEY"), 24*time.Hour)
 		if err != nil {
-			http.Error(w, "Internal server error....", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -80,7 +80,7 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		update = bson.M{"$set": bson.M{"refreshToken": []string{refreshToken}}}
 		_, err = collection.UpdateOne(r.Context(), filter, update)
 		if err != nil {
-			http.Error(w, "Internal server error.....", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 

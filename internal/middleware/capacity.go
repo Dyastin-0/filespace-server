@@ -32,7 +32,7 @@ func CheckStorageCapacity(client *mongo.Client) func(http.Handler) http.HandlerF
 			files := r.MultipartForm.File["files"]
 
 			if len(files) == 0 {
-				http.Error(w, "No files to upload.", http.StatusBadRequest)
+				next.ServeHTTP(w, r)
 				return
 			}
 

@@ -21,12 +21,12 @@ func SendVerification(client *mongo.Client) http.HandlerFunc {
 		var reqBody = types.VerificationBody{}
 
 		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
-			http.Error(w, "Bad request. Invalid format.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Invalid format", http.StatusBadRequest)
 			return
 		}
 
 		if reqBody.Email == "" {
-			http.Error(w, "Bad request. Missing required fields.", http.StatusBadRequest)
+			http.Error(w, "Bad request. Missing required fields", http.StatusBadRequest)
 			return
 		}
 
@@ -35,13 +35,13 @@ func SendVerification(client *mongo.Client) http.HandlerFunc {
 		err := collection.FindOne(r.Context(), bson.M{"email": reqBody.Email}).Decode(&user)
 
 		if err != nil {
-			http.Error(w, "Account not found.", http.StatusNotFound)
+			http.Error(w, "Account not found", http.StatusNotFound)
 			return
 		}
 
 		verificationToken, err := token.Generate(&user, os.Getenv("EMAIL_TOKEN_KEY"), 15*time.Minute)
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
@@ -59,7 +59,7 @@ func SendVerification(client *mongo.Client) http.HandlerFunc {
 		err = mail.SendHTMLEmail(&options)
 
 		if err != nil {
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
