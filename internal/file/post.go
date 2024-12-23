@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"cloud.google.com/go/storage"
-	// "go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	types "filespace/internal/auth/type"
@@ -27,7 +27,7 @@ func Post(storageClient *storage.Client, mongoClient *mongo.Client) http.Handler
 		files := r.MultipartForm.File["files"]
 		path := r.FormValue("path")
 		folder := r.FormValue("folder")
-		// size := r.Context().Value("size")
+		size := r.Context().Value("size")
 
 		if files != nil {
 			for _, fileHeader := range files {
@@ -75,14 +75,14 @@ func Post(storageClient *storage.Client, mongoClient *mongo.Client) http.Handler
 				}
 			}
 
-			// collection := mongoClient.Database("test").Collection("users")
-			// filter := bson.M{"email": claims.User.Email}
+			collection := mongoClient.Database("test").Collection("users")
+			filter := bson.M{"email": claims.User.Email}
 
-			// update := bson.M{"$inc": bson.M{"usedStorage": size}}
-			// if _, err := collection.UpdateOne(r.Context(), filter, update); err != nil {
-			// 	http.Error(w, "Error updating user storage", http.StatusInternalServerError)
-			// 	return
-			// }
+			update := bson.M{"$inc": bson.M{"usedStorage": size}}
+			if _, err := collection.UpdateOne(r.Context(), filter, update); err != nil {
+				http.Error(w, "Error updating user storage", http.StatusInternalServerError)
+				return
+			}
 
 		} else if folder != "" {
 			folderName := fmt.Sprintf("%s/%s/", id, folder)
