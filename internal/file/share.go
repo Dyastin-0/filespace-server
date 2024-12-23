@@ -36,8 +36,6 @@ func Share(storageClient *storage.Client, mongoClient *mongo.Client) http.Handle
 		prefix := fmt.Sprintf("%s/%s", id, reqBody.File)
 		bucket := storageClient.Bucket(bucketName)
 
-		fmt.Println(prefix)
-
 		obj := bucket.Object(prefix)
 
 		attrs, err := obj.Attrs(r.Context())
