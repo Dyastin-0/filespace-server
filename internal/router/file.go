@@ -17,6 +17,7 @@ func File(storageClient *storage.Client, mongoClient *mongo.Client) *chi.Mux {
 	router.Get("/", file.Get(storageClient))
 	router.Post("/", middleware.CheckStorageCapacity(mongoClient)(file.Post(storageClient, mongoClient)))
 	router.Delete("/", file.Delete(storageClient, mongoClient))
+	router.Post("/share", file.Share(storageClient, mongoClient))
 
 	return router
 }

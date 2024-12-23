@@ -77,7 +77,7 @@ func Post(storageClient *storage.Client, mongoClient *mongo.Client) http.Handler
 
 			collection := mongoClient.Database("test").Collection("users")
 			filter := bson.M{"email": claims.User.Email}
-			fmt.Println(size)
+
 			update := bson.M{"$inc": bson.M{"usedStorage": size}}
 			if _, err := collection.UpdateOne(r.Context(), filter, update); err != nil {
 				http.Error(w, "Error updating user storage", http.StatusInternalServerError)

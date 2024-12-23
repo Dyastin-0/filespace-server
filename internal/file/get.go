@@ -25,12 +25,10 @@ func Get(client *storage.Client) http.HandlerFunc {
 		id := claims.User.ID
 
 		prefix := fmt.Sprintf("%s/", id)
-		ctx := r.Context()
-
 		bucket := client.Bucket(bucketName)
 
 		query := &storage.Query{Prefix: prefix}
-		it := bucket.Objects(ctx, query)
+		it := bucket.Objects(r.Context(), query)
 
 		var filesMetaData []fileTypes.Metadata
 
