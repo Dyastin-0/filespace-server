@@ -4,7 +4,7 @@ OUTPUT_DIR="/opt/filespace"
 MAIN_PACKAGE="./cmd/server/main.go"
 ENV_PATH="./.env"
 BINARY_NAME="run"
-SERVICE_FILE="filespace.service"
+SERVICE_FILE="filespace-v2.service"
 SERVICE_PATH="/etc/systemd/system/$SERVICE_FILE"
 
 sudo mkdir -p $OUTPUT_DIR
