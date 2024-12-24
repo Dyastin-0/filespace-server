@@ -1,6 +1,6 @@
 # Filespace Endpoints
 
-1. Files
+1. Files `/api/v2/files`
 
    - `GET /api/v2/files`
 
@@ -93,7 +93,7 @@
 
       returns `status 200` on success
 
-2. Authentication
+2. Authentication `/api/v2/auth`
 
    - `POST /api/v2/auth`
 
