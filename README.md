@@ -6,6 +6,10 @@
 
 # Introduction
 
+***Filespace*** is a simple cloud storage utilizing the ***Google Cloud Storage API***. It includes features such as uploading, deleting, moving, sharing and viewing files, and creating folders.
+
+This service is coupled with the [Filespace Frontend](https://github.com/Dyastin-0/filespace) built with Vite; the [repo](https://github.com/Dyastin-0/filespace) also includes the v1 API written in ***Node.js***.
+
 # Filespace Endpoints
 
 1. Files `/api/v2/files`
