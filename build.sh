@@ -17,7 +17,7 @@ copy_file() {
     echo "[$APP] Copying $source_file to $dest_file..."
     sudo cp "$source_file" "$dest_file"
     if [ $? -eq 0 ]; then
-        echo "[$APP] $source_file successfully moved to $dest_file"
+        echo "[$APP] $source_file successfully copied to $dest_file"
     else
         echo "[$APP] Failed to move $source_file. Check permissions or path."
         exit 1
