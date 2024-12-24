@@ -10,7 +10,7 @@ SERVICE_PATH="/etc/systemd/system/$SERVICE_FILE"
 sudo mkdir -p $OUTPUT_DIR
 
 echo "Building the application..."
-go build -ldflags="-s -w" -o $OUTPUT_DIR/$BINARY_NAME $MAIN_PACKAGE
+sudo go build -ldflags="-s -w" -o $OUTPUT_DIR/$BINARY_NAME $MAIN_PACKAGE
 
 if [ $? -eq 0 ]; then
     echo "Build successful. Binary located at $OUTPUT_DIR/$BINARY_NAME"
