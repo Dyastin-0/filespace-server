@@ -48,6 +48,8 @@ func generateKeys() {
 		"GOOGLE_CLIENT_SECRET",
 	}
 
+	fmt.Println("filespace: Inserting secrets in .env file...")
+
 	newVariables := make([]string, 0, len(secrets)+7)
 	for _, secret := range secrets {
 		value, err := getSecret(secret)
@@ -97,12 +99,14 @@ func generateKeys() {
 		return
 	}
 
-	fmt.Printf("filespace: Successfully updated secrets in %s.\n", envFilePath)
+	fmt.Printf("filespace: Successfully inserted secrets in %s\n", envFilePath)
 }
 
 func createSecretsAccessor() error {
 	envFilePath := filepath.Join("./.env")
 	tempFilePath := filepath.Join("./secretsaccesor.json")
+
+	fmt.Println("filespace: Creating secretsaccesor.json file...")
 
 	file, err := os.Create(tempFilePath)
 	if err != nil {
@@ -133,7 +137,7 @@ func createSecretsAccessor() error {
 		return fmt.Errorf("filespace: Failed to write to .env file: %v", err)
 	}
 
-	fmt.Println("filespace: Successfully created secretsaccesor.json.")
+	fmt.Println("filespace: Successfully created secretsaccesor.json")
 	return nil
 }
 
