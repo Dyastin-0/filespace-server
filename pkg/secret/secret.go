@@ -20,7 +20,7 @@ func getSecret(key string) (string, error) {
 
 	client, err := secretmanager.NewClient(ctx, option.WithCredentialsFile("./secretsaccesor.json"))
 	if err != nil {
-		return "", fmt.Errorf("[Filespace] Failed to create secret manager client: %v", err)
+		return "", fmt.Errorf("filespace: Failed to create secret manager client: %v", err)
 	}
 	defer client.Close()
 
@@ -29,7 +29,7 @@ func getSecret(key string) (string, error) {
 	req := &secretmanagerpb.AccessSecretVersionRequest{Name: secretName}
 	result, err := client.AccessSecretVersion(ctx, req)
 	if err != nil {
-		return "", fmt.Errorf("[Filespace] Failed to access secret version: %v", err)
+		return "", fmt.Errorf("filespace: Failed to access secret version: %v", err)
 	}
 
 	return string(result.Payload.Data), nil
@@ -52,7 +52,7 @@ func generateKeys() {
 	for _, secret := range secrets {
 		value, err := getSecret(secret)
 		if err != nil {
-			fmt.Printf("[Filespace] Error retrieving secret %s: %v\n", secret, err)
+			fmt.Printf("filespace: Error retrieving secret %s: %v\n", secret, err)
 			return
 		}
 		newVariables = append(newVariables, fmt.Sprintf("%s=%s", secret, value))
@@ -69,7 +69,7 @@ func generateKeys() {
 
 	file, err := os.Open(envFilePath)
 	if err != nil {
-		fmt.Printf("[Filespace] Error opening .env file: %v\n", err)
+		fmt.Printf("filespace: Error opening .env file: %v\n", err)
 		return
 	}
 	defer file.Close()
@@ -80,7 +80,7 @@ func generateKeys() {
 		lines = append(lines, scanner.Text())
 	}
 	if err := scanner.Err(); err != nil {
-		fmt.Printf("[Filespace] Error reading .env file: %v\n", err)
+		fmt.Printf("filespace: Error reading .env file: %v\n", err)
 		return
 	}
 
@@ -93,11 +93,11 @@ func generateKeys() {
 
 	err = os.WriteFile(envFilePath, []byte(newContent), 0644)
 	if err != nil {
-		fmt.Printf("[Filespace] Error writing to .env file: %v\n", err)
+		fmt.Printf("filespace: Error writing to .env file: %v\n", err)
 		return
 	}
 
-	fmt.Printf("[Filespace] Successfully updated secrets in %s.\n", envFilePath)
+	fmt.Printf("filespace: Successfully updated secrets in %s.\n", envFilePath)
 }
 
 func createSecretsAccessor() error {
@@ -106,7 +106,7 @@ func createSecretsAccessor() error {
 
 	file, err := os.Create(tempFilePath)
 	if err != nil {
-		fmt.Printf("[Filespace] Failed to create file: %v\n", err)
+		fmt.Printf("filespace: Failed to create file: %v\n", err)
 		return err
 	}
 	defer file.Close()
@@ -114,32 +114,32 @@ func createSecretsAccessor() error {
 	serviceAccount := os.Getenv("SECRETS_SERVICE_ACCOUNT")
 
 	if serviceAccount == "" {
-		return fmt.Errorf("[Filespace] SECRETS_SERVICE_ACCOUNT environment variable is not set")
+		return fmt.Errorf("filespace: SECRETS_SERVICE_ACCOUNT environment variable is not set")
 	}
 
 	_, err = file.WriteString(serviceAccount)
 	if err != nil {
-		return fmt.Errorf("[Filespace] Failed to write to secretsaccesor.json file: %v", err)
+		return fmt.Errorf("filespace: Failed to write to secretsaccesor.json file: %v", err)
 	}
 
 	envFile, err := os.OpenFile(envFilePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
-		return fmt.Errorf("[Filespace] Failed to open .env file: %v", err)
+		return fmt.Errorf("filespace: Failed to open .env file: %v", err)
 	}
 	defer envFile.Close()
 
 	_, err = envFile.WriteString("\nGOOGLE_APPLICATION_CREDENTIALS=./secretsaccesor.json\n")
 	if err != nil {
-		return fmt.Errorf("[Filespace] Failed to write to .env file: %v", err)
+		return fmt.Errorf("filespace: Failed to write to .env file: %v", err)
 	}
 
-	fmt.Println("[Filespace] Successfully created secretsaccesor.json.")
+	fmt.Println("filespace: Successfully created secretsaccesor.json.")
 	return nil
 }
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		fmt.Println("[Filespace] Error loading .env file")
+		fmt.Println("filespace: Error loading .env file")
 	}
 	createSecretsAccessor()
 	generateKeys()

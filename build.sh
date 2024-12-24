@@ -62,6 +62,7 @@ else
 	echo "$APP: Service started"
 fi
 
+echo "$APP: Restarting Caddy server..."
 sudo systemctl restart caddy
 echo "$APP: Caddy restarted"
 
