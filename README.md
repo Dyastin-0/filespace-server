@@ -6,7 +6,7 @@
 
       Files metadata are fetched based on the present `Bearer <t>` on the `Authorization` header of the request automatically handled by the `JWT` middleware.
    
-      returns an array of:
+      Returns an array of:
 
       ```go
          type Metadata struct {
@@ -33,9 +33,8 @@
          files := r.MultipartForm.File["files"]
          path := r.FormValue("path")
          folder := r.FormValue("folder")
-         size := r.Context().Value("size")
       ```
-      returns `status 201` on success
+      Returns: `status 201` on success
 
    - `DELETE /api/v2/files`
 
@@ -49,7 +48,7 @@
          }
       ```
 
-      returns `status 200` on success
+      Returns: `status 200` on success
 
    - `POST /api/v2/files/move`
 
@@ -70,7 +69,7 @@
          }
       ```
 
-      returns `status 200` on success
+      Returns: `status 200` on success
 
    - `POST /api/v2/files/share`
   
@@ -91,7 +90,7 @@
          }
       ```
 
-      returns `status 200` on success
+      Returns: `status 200` on success
 
 2. Authentication `/api/v2/auth`
 
@@ -105,7 +104,7 @@
             Password: string `json:"password"`
          }
       ```
-      returns
+      Returns:
       
       ```go
          type Response struct {
@@ -155,7 +154,7 @@
       ```go
          query.Get("t")
       ```
-      returns the same data as `POST /api/v2/auth` on success
+      Returns the same data as `POST /api/v2/auth` on success
 
    - `/api/v2/auth/send-verification`
 
@@ -167,7 +166,7 @@
          }
       ```
 
-      returns `status 200` on success
+      Returns: `status 200` on success
 
    - `/api/v2/auth/recover`
 
@@ -180,7 +179,7 @@
       }
       ```
 
-      returns `status 200` on success, does not aumatically log ins user as verify do
+      Returns: `status 200` on success, does not automatically log ins user as `POST /api/v2/auth/verify` do
 
    - `/api/v2/auth//send-recovery`
 
@@ -192,7 +191,7 @@
       }
       ```
 
-      returns `status 200` on success
+      Returns: `status 200` on success
 
    - `/api/v2/auth/log-out`
 
