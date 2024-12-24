@@ -16,7 +16,7 @@ This service is coupled with the [Filespace Frontend](https://github.com/Dyastin
 
    - `GET /api/v2/files`
 
-      Files metadata are fetched based on the present `Bearer <t>` on the `Authorization` header of the request automatically handled by the `JWT` middleware.
+      Files metadata are fetched based on the present `Bearer <token>` in the `Authorization` header of the request automatically handled by the `JWT` middleware; `JWT` middleware decodes the token and attaches the decoded data to the request's `context` which is used in several endpoints such as `this`.
    
       Returns an array of:
 
@@ -37,7 +37,7 @@ This service is coupled with the [Filespace Frontend](https://github.com/Dyastin
 
    - `POST /api/v2/files`
   
-      Uploads the files inside the `formdata`; automatically handles the distinction between a file and a folder. Similar to `GET`, files are uploaded based on the present `Bearer <t>` on the `Authorization` header of the request.
+      Uploads the files inside the `formdata`; automatically handles the distinction between a file and a folder. Similar to `GET`, files are uploaded based on the present `Bearer <token>` in the `Authorization` header of the request.
 
       Expects:
 
