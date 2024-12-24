@@ -11,10 +11,8 @@ type Body struct {
 }
 
 type Response struct {
-	AccessToken string   `json:"accessToken"`
-	Email       string   `json:"user"`
-	Username    string   `json:"username"`
-	Roles       []string `json:"roles"`
+	AccessToken string `json:"accessToken"`
+	User        User
 }
 
 type User struct {

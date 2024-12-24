@@ -110,7 +110,7 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 			MaxAge:   24 * 60 * 60,
 		})
 
-		response := authTypes.RefreshResponse{
+		response := authTypes.Response{
 			AccessToken: accessToken,
 			User: authTypes.User{
 				Username:    user.Username,

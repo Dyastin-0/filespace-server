@@ -95,9 +95,13 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 
 		response := types.Response{
 			AccessToken: accessToken,
-			Email:       user.Email,
-			Username:    user.Username,
-			Roles:       user.Roles,
+			User: types.User{
+				Username:    user.Username,
+				Email:       user.Email,
+				Roles:       user.Roles,
+				ImageURL:    user.ImageURL,
+				UsedStorage: user.UsedStorage,
+			},
 		}
 
 		json.NewEncoder(w).Encode(response)
