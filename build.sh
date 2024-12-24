@@ -67,3 +67,5 @@ sudo systemctl restart caddy
 echo "$APP: Caddy restarted"
 
 echo "$APP: Service build and deployment complete"
+
+sudo systemctl status $SERVICE_FILE
