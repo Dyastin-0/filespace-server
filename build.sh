@@ -7,7 +7,7 @@ BINARY_NAME="run"
 SERVICE_FILE="filespace.service"
 SERVICE_PATH="/etc/systemd/system/$SERVICE_FILE"
 
-mkdir -p $OUTPUT_DIR
+sudo mkdir -p $OUTPUT_DIR
 
 echo "Building the application..."
 go build -ldflags="-s -w" -o $OUTPUT_DIR/$BINARY_NAME $MAIN_PACKAGE
