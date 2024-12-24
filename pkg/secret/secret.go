@@ -24,7 +24,7 @@ func getSecret(key string) (string, error) {
 	}
 	defer client.Close()
 
-	secretName := fmt.Sprintf("[Filespace] Projects/filespace-442811/secrets/%s/versions/1", key)
+	secretName := fmt.Sprintf("projects/filespace-442811/secrets/%s/versions/1", key)
 
 	req := &secretmanagerpb.AccessSecretVersionRequest{Name: secretName}
 	result, err := client.AccessSecretVersion(ctx, req)
