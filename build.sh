@@ -34,6 +34,9 @@ if [ -f "./$SERVICE_FILE" ]; then
 	echo "Moving .env file to $OUTPUT_DIR..."
 	sudo cp $ENV_PATH $OUTPUT_DIR/.env
 
+	echo "Moving secret acccesor to $OUTPUT_DIR..."
+	sudo cp ./secretsaccesor.json $OUTPUT_DIR/secretsaccesor.json
+
 	if [ $? -eq 0 ]; then
 		echo "Service file moved successfully to $SERVICE_PATH."
 		sudo systemctl daemon-reload
