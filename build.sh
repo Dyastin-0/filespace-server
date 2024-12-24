@@ -40,8 +40,11 @@ if [ -f "./$SERVICE_FILE" ]; then
 	if [ $? -eq 0 ]; then
 		echo "Service file moved successfully to $SERVICE_PATH."
 		sudo systemctl daemon-reload
-		sudo systemctl restart $SERVICE_FILE
-		sudo systemctl enable $SERVICE_FILE
+		if systemctl is-active --quiet $SERVICE_FILE; then
+			sudo systemctl restart $SERVICE_FILE
+		else
+			sudo systemctl start $SERVICE_FILE
+		fi
 		sudo systemctl restart caddy
 		echo "Service started and enabled."
 	else
