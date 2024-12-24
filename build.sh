@@ -9,7 +9,7 @@ SERVICE_PATH="/etc/systemd/system/$SERVICE_FILE"
 
 sudo mkdir -p $OUTPUT_DIR
 
-echo "Building the application..."
+echo "Building the binary..."
 sudo go build -ldflags="-s -w" -o $OUTPUT_DIR/$BINARY_NAME $MAIN_PACKAGE
 
 if [ $? -eq 0 ]; then
@@ -40,8 +40,8 @@ if [ -f "./$SERVICE_FILE" ]; then
 	if [ $? -eq 0 ]; then
 		echo "Service file moved successfully to $SERVICE_PATH."
 		sudo systemctl daemon-reload
-		sudo systemctl enable $SERVICE_FILE --now 
 		sudo systemctl restart caddy
+		sudo systemctl enable $SERVICE_FILE
 		echo "Service started and enabled."
 	else
 		echo "Failed to move service file. Check permissions or path."
