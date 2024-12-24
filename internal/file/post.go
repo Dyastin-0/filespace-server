@@ -96,6 +96,6 @@ func Post(storageClient *storage.Client, mongoClient *mongo.Client) http.Handler
 			}
 		}
 
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusCreated)
 	}
 }
