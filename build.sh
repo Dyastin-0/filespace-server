@@ -37,12 +37,12 @@ else
     exit 1
 fi
 
-echo "$APP: Generating .env file..."
+echo "$APP: Setting up secrets..."
 if ! go run ./pkg/secret/secret.go; then
     echo "Failed to generate .env file"
     exit 1
 else
-    echo "$APP: .env file generated successfully"
+    echo "$APP: secrets set up complete"
 fi
 
 copy_file $ENV_FILE $ENV_PATH
