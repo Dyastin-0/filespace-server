@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP="Filespace"
+APP="flespace"
 OUTPUT_DIR="/opt/filespace"
 MAIN_PACKAGE="./cmd/server/main.go"
 BINARY_NAME="run"
@@ -14,12 +14,12 @@ SERVICE_PATH="/etc/systemd/system/$SERVICE_FILE"
 copy_file() {
     local source_file=$1
     local dest_file=$2
-    echo "[$APP] Copying $source_file to $dest_file..."
+    echo "$APP: Copying $source_file to $dest_file..."
     sudo cp "$source_file" "$dest_file"
     if [ $? -eq 0 ]; then
-        echo "[$APP] $source_file successfully copied to $dest_file"
+        echo "$APP: $source_file successfully copied to $dest_file"
     else
-        echo "[$APP] Failed to move $source_file. Check permissions or path."
+        echo "$APP: Failed to move $source_file. Check permissions or path."
         exit 1
     fi
 }
@@ -28,40 +28,41 @@ copy_file ./$SERVICE_FILE $SERVICE_PATH
 
 sudo mkdir -p $OUTPUT_DIR
 
-echo "[$APP] Building the binary..."
+echo "$APP: Building the binary..."
 sudo go build -ldflags="-s -w" -o $OUTPUT_DIR/$BINARY_NAME $MAIN_PACKAGE
 if [ $? -eq 0 ]; then
-    echo "[$APP] Build successful. Binary located at $OUTPUT_DIR/$BINARY_NAME"
+    echo "$APP: Build successful. Binary located at $OUTPUT_DIR/$BINARY_NAME"
 else
-    echo "[$APP] Build failed. Check errors above."
+    echo "$APP: Build failed. Check errors above."
     exit 1
 fi
 
-echo "[$APP] Generating .env file..."
+echo "$APP: Generating .env file..."
 if ! go run ./pkg/secret/secret.go; then
     echo "Failed to generate .env file"
     exit 1
 else
-    echo "[$APP] .env file generated successfully"
+    echo "$APP: .env file generated successfully"
 fi
 
 copy_file $ENV_FILE $ENV_PATH
 copy_file $SECRET_FILE $SECRET_PATH
 
-echo "[$APP] Reloading systemd daemon..."
+echo "$APP: Reloading systemd daemon..."
 sudo systemctl daemon-reload
+echo "$APP: Daemon reloaded"
 
 if systemctl is-active --quiet $SERVICE_FILE; then
-	echo "[$APP] Restarting the service..."
+	echo "$APP: Restarting the service..."
     sudo systemctl restart $SERVICE_FILE
-	echo "[$APP] Service restarted"
+	echo "$APP: Service restarted"
 else
-	echo "[$APP] Starting the service..."
+	echo "$APP: Starting the service..."
     sudo systemctl start $SERVICE_FILE
-	echo "[$APP] Service started"
+	echo "$APP: Service started"
 fi
 
 sudo systemctl restart caddy
-echo "[$APP] Caddy restarted"
+echo "$APP: Caddy restarted"
 
-echo "[$APP] Service build and deployment complete"
+echo "$APP: Service build and deployment complete"
