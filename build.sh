@@ -13,7 +13,7 @@ SERVICE_PATH="/etc/systemd/system/$SERVICE_FILE"
 copy_file() {
     local source_file=$1
     local dest_file=$2
-    echo "Copying $source_file to $dest_file..."
+    echo "[Filespace] Copying $source_file to $dest_file..."
     sudo cp "$source_file" "$dest_file"
     if [ $? -eq 0 ]; then
         echo "[Filespace] $source_file successfully moved to $dest_file"
@@ -23,13 +23,12 @@ copy_file() {
     fi
 }
 
-echo "Moving $SERVICE_FILE to $SERVICE_PATH..."
 copy_file ./$SERVICE_FILE $SERVICE_PATH
 
 sudo mkdir -p $OUTPUT_DIR
 
 echo "[Filespace] Building the binary..."
-go build -ldflags="-s -w" -o $OUTPUT_DIR/$BINARY_NAME $MAIN_PACKAGE
+sudo go build -ldflags="-s -w" -o $OUTPUT_DIR/$BINARY_NAME $MAIN_PACKAGE
 if [ $? -eq 0 ]; then
     echo "[Filespace] Build successful. Binary located at $OUTPUT_DIR/$BINARY_NAME"
 else
