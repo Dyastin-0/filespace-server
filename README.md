@@ -1,3 +1,203 @@
+# Filespace Endpoints
+
+1. Files
+
+   - `GET /api/v2/files`
+
+      Files metadata are fetched based on the present `Bearer <t>` on the `Authorization` header of the request automatically handled by the `JWT` middleware.
+   
+      returns an array of:
+
+      ```go
+         type Metadata struct {
+         	Name        string
+         	Link        string
+         	Owner       string
+         	Size        int64
+         	Updated     time.Time
+         	ContentType string
+         	Created     time.Time
+         	Type        string
+         }
+      ```
+
+      on success
+
+   - `POST /api/v2/files`
+  
+      Uploads the files inside the `formdata`; automatically handles the distinction between a file and a folder. Similar to `GET`, files are uploaded based on the present `Bearer <t>` on the `Authorization` header of the request.
+
+      Expects:
+
+      ```go
+         files := r.MultipartForm.File["files"]
+         path := r.FormValue("path")
+         folder := r.FormValue("folder")
+         size := r.Context().Value("size")
+      ```
+      returns `status 201` on success
+
+   - `DELETE /api/v2/files`
+
+      Deletes the specified files in the request body of the authenticated user; automatically handles the distinction between a file and a folder.
+      
+      Expects:
+
+      ```go
+         type DeleteBody struct {
+            Files []string `json:"files"`
+         }
+      ```
+
+      returns `status 200` on success
+
+   - `POST /api/v2/files/move`
+
+      Moves the specified file into another location, this process includes copying the specified file into the `TargetPath`, or files if the specified path is a folder, and deletes the file located on the previous path.
+
+      Expects:
+
+      ```go
+         type file struct {
+            Name string `json:"name"`
+            Path string `json:"path"`
+            Type string `json:"type"`
+         }
+         
+         type MoveBody struct {
+            File       file   `json:"file"`
+            TargetPath string `json:"targetPath"`
+         }
+      ```
+
+      returns `status 200` on success
+
+   - `POST /api/v2/files/share`
+  
+      Sends the specified file to the specified email on the request body.
+
+      Expects:
+
+      ```go
+         type expiration struct {
+            Value int64  `json:"value"`
+            Str   string `json:"text"`
+         }
+         
+         type ShareBody struct {
+            Email string     `json:"email"`
+            File  string     `json:"file"`
+            Exp   expiration `json:"expiration"`
+         }
+      ```
+
+      returns `status 200` on success
+
+2. Authentication
+
+   - `POST /api/v2/auth`
+
+      Expects:
+
+      ```go
+         type Body struct {
+            Email: string `json:"email"`
+            Password: string `json:"password"`
+         }
+      ```
+      returns
+      
+      ```go
+         type Response struct {
+         AccessToken string `json:"accessToken"`
+         User        User
+         }
+         
+         type User struct {
+            ID          string               `bson:"_id,omitempty"`
+            Username    string               `bson:"username"`
+            Email       string               `bson:"email"`
+            Roles       []string             `bson:"roles"`
+            ImageURL    string               `bson:"profileImageURL"`
+            UsedStorage primitive.Decimal128 `bson:"usedStorage"`
+         }
+      ```
+      on success
+
+   - `POST /api/v2/auth/sign-up`
+
+      Expects:
+
+      ```go
+         type SignupBody struct {
+            Email    string `json:"email"`
+            Password string `json:"password"`
+            Username string `json:"username"`
+         }
+      ```
+
+      returns `status 201` on success
+
+   - `POST /api/v2/auth/refresh`
+
+      Expects:
+
+      ```go
+         r.Cookie("jwt")
+      ```
+
+      returns the same data as `POST /api/v2/auth` on success
+
+   - `/api/v2/auth/verify`
+
+      Expects:
+
+      ```go
+         query.Get("t")
+      ```
+      returns the same data as `POST /api/v2/auth` on success
+
+   - `/api/v2/auth/send-verification`
+
+      Expects:
+
+      ```go
+         type VerificationBody struct {
+            Email string `json:"email"`
+         }
+      ```
+
+      returns `status 200` on success
+
+   - `/api/v2/auth/recover`
+
+      Expects:
+
+      ```go
+      type RecoverBody struct { //WHAT BODY?
+         Token       string `json:"t"`
+         NewPassword string `json:"newPassword"`
+      }
+      ```
+
+      returns `status 200` on success, does not aumatically log ins user as verify do
+
+   - `/api/v2/auth//send-recovery`
+
+      Expects:
+
+      ```go
+         type SendRecoveryBody struct {
+         Email string `json:"email"`
+      }
+      ```
+
+      returns `status 200` on success
+
+   - `/api/v2/auth/log-out`
+
+      Simply clears the jwt in the cookie, if present remove it from the database
+
 # Filespace Build and Deploy Script
 
 This repository includes a custom `build.sh` script to simplify the build and deployment process for the **Filespace** application.
@@ -6,10 +206,11 @@ This repository includes a custom `build.sh` script to simplify the build and de
 
 1. Clone the repository:
 
-   SSH  
+   SSH
    ```bash
    git clone git@github.com:Dyastin-0/filespace-server.git
    ```
+      
    HTTPS
    ```bash
    git clone https://github.com/Dyastin-0/filespace-server.git
@@ -19,9 +220,8 @@ This repository includes a custom `build.sh` script to simplify the build and de
    cd filespace-server
    ```
 
-
-2. Create a `.env` file and set the `SECRETS_SERVICE_ACCOUNT` to the service account json (in a single line). 
-
+2. Create a `.env` file and set the `SECRETS_SERVICE_ACCOUNT` to the service account json (in a single line):
+   
    ```bash
    nano .env
    ```
@@ -104,8 +304,3 @@ The script is tightly integrated with `Caddy` & `systemd` and performs the follo
   ```bash
   sudo systemctl status filespace-v2.service
   ```
-
----
-
-Keep secrets safe and ensure permissions are correctly configured for production use.
-
