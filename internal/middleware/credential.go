@@ -8,11 +8,17 @@ import (
 func Credential(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
+		fetchSite := r.Header.Get("Sec-Fetch-Site")
 		isAllowed := false
-		for _, allowedOrigin := range config.AllowedOrigins {
-			if origin == allowedOrigin {
-				isAllowed = true
-				break
+
+		if fetchSite == "same-origin" || fetchSite == "same-site" {
+			isAllowed = true
+		} else if origin != "" {
+			for _, allowedOrigin := range config.AllowedOrigins {
+				if origin == allowedOrigin {
+					isAllowed = true
+					break
+				}
 			}
 		}
 
