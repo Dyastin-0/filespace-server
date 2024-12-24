@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP="flespace"
+APP="filespace"
 OUTPUT_DIR="/opt/filespace"
 MAIN_PACKAGE="./cmd/server/main.go"
 BINARY_NAME="run"
