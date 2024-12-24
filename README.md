@@ -1,3 +1,11 @@
+# Table of Contents
+
+- [Introduction](#introduction)
+- [Endpoints](#filespace-endpoints)
+- [Build and Deploy](#filespace-build-and-deploy-script)
+
+# Introduction
+
 # Filespace Endpoints
 
 1. Files `/api/v2/files`
