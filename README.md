@@ -12,11 +12,149 @@ This service is coupled with the [Filespace Frontend](https://github.com/Dyastin
 
 # Filespace Endpoints
 
-1. Files `/api/v2/files`
+## Prerequisite
+
+### File
+
+A `file` is a node which is either a file or a folder based on the property `type`: 
+
+```javascript
+   class Node {
+      constructor(type, name, path, link, size, created, parent = null) {
+         this.type = type;
+         this.name = name;
+         this.path = path;
+         this.link = link;
+         this.created = created;
+         this.size = size;
+         this.children = type === "directory" ? [] : null;
+         this.parent = parent;
+      }
+
+      addChild(childFile); //See the implementation @/helpers/tree.js at client repo
+   }
+
+   const file = new File(
+      "file",
+      "ex.text",
+      "files/texts",
+      <signed_url>,
+      <date>,
+      <size_byte>,
+   );
+```
+
+### File Tree
+
+***Google Cloud Storage*** organize files in a way that is conceptually similar to a file system. `Files` are stored as objects addressed by a unique object name, which is essentially a path that ***GCS*** uses to manage and retrieve files.
+
+   - File `prefix/text_file.txt`
+   - Folder `prefix/folder_name/`
+
+This function expects an array containing the file's `metadata` builds the file tree there, and returns the `root` node.
+
+```javascript
+   const generateFileTree = (files) => {
+   const root = new Node("directory", "Your files", "", null, 0);
+
+   files.forEach((file) => {
+      const filePath = file.Name;
+      const parts = filePath.split("/").filter(Boolean);
+      let currentNode = root;
+
+      parts.forEach((part, index) => {
+         const isLastPart = index === parts.length - 1;
+         const isDirectory = filePath.endsWith("/");
+
+         let childNode = currentNode.children.find((child) => child.name === part);
+
+         if (!childNode) {
+         const type = isLastPart && !isDirectory ? "file" : "directory";
+         const fullPath = parts.slice(0, index + 1).join("/");
+         childNode =
+            type === "directory"
+               ? new Node(type, part, fullPath, null, 0, file.Created, currentNode)
+               : new Node(
+                  type,
+                  part,
+                  fullPath,
+                  file.Link,
+                  file.Size,
+                  file.Created,
+                  currentNode
+               );
+         currentNode.addChild(childNode);
+         }
+
+         currentNode = childNode;
+      });
+   });
+
+   return root;
+   };
+```
+
+### Sample File Tree
+
+```json
+   {
+   "type": "directory",
+   "name": "my files",
+   "path": "",
+   "link": null,
+   "created": null,
+   "size": 1024,
+   "children": [
+      {
+         "type": "directory",
+         "name": "folder1",
+         "path": "/my-bucket/folder1",
+         "link": "https://storage.googleapis.com/my-bucket/folder1",
+         "created": "2024-01-02T12:00:00Z",
+         "size": 1024,
+         "children": [
+         {
+            "type": "directory",
+            "name": "subfolder1",
+            "path": "/my-bucket/folder1/subfolder1",
+            "link": "https://storage.googleapis.com/my-bucket/folder1/subfolder1",
+            "created": "2024-01-03T12:00:00Z",
+            "size": 1024,
+            "children": [
+               {
+               "type": "file",
+               "name": "file1.txt",
+               "path": "/my-bucket/folder1/subfolder1/file1.txt",
+               "link": "https://storage.googleapis.com/my-bucket/folder1/subfolder1/file1.txt",
+               "created": "2024-01-04T12:00:00Z",
+               "size": 1024,
+               "children": null,
+               "parent": "/my-bucket/folder1/subfolder1"
+               }
+            ],
+            "parent": "/my-bucket/folder1"
+         }
+         ],
+         "parent": "/my-bucket"
+      }
+   ]
+   }
+```
+
+```perl
+   Your files/
+   └── folder1/
+      └── subfolder1/
+         └── file1.txt
+```
+
+## Endpoints
+
+### Files `/api/v2/files`
 
    - `GET /api/v2/files`
 
-      Files metadata are fetched based on the present `Bearer <t>` on the `Authorization` header of the request automatically handled by the `JWT` middleware.
+      Files metadata are fetched based on the present `Bearer <token>` on the `Authorization` header of the request automatically handled by the `JWT` middleware.
    
       Returns an array of:
 
@@ -35,9 +173,19 @@ This service is coupled with the [Filespace Frontend](https://github.com/Dyastin
 
       on success
 
+      Example with axios:
+
+      ```javascript
+         axios.get("/api/v2/files", {
+            headers: {
+               Authorization: `Bearer <token>`
+            }
+         });
+      ```
+
    - `POST /api/v2/files`
   
-      Uploads the files inside the `formdata`; automatically handles the distinction between a file and a folder. Similar to `GET`, files are uploaded based on the present `Bearer <t>` on the `Authorization` header of the request.
+      Uploads the files inside the `formdata`; automatically handles the distinction between a file and a folder. Similar to `GET`, files are uploaded based on the present `Bearer <token>` on the `Authorization` header of the request.
 
       Expects:
 
@@ -47,6 +195,49 @@ This service is coupled with the [Filespace Frontend](https://github.com/Dyastin
          folder := r.FormValue("folder")
       ```
       Returns: `status 201` on success
+
+      Example with axios:
+
+      - Uploading a file:
+
+         ```javascript
+            const file = event.target.files[0];
+            const path = "/photos";
+
+            const formData = new FormData();
+
+            formData.append("files", file);
+            formData.append("path", path);
+
+            axios.post("/api/v2/files", formData);
+         ```
+
+         or
+
+         ```javascript
+            const files = event.target.files;
+
+            Array.from(files).forEach((file) => {
+               formData.append("files", file);
+            });
+            formData.append("path", currentTab.path);
+
+            axios.post("/api/v2/files", formData);
+         ```
+
+      - Creating a folder:
+
+         ```javascript
+            const folderName = "family";
+            const path = "/photos";
+
+            const formData = new FormData();
+
+            formData.append("folder", folderName);
+            formData.append("path", path);
+
+            axios.post("/api/v2/files", formData);
+         ```
 
    - `DELETE /api/v2/files`
 
@@ -62,7 +253,31 @@ This service is coupled with the [Filespace Frontend](https://github.com/Dyastin
 
       Returns: `status 200` on success
 
-   - `POST /api/v2/files/move`
+      Example with axios:
+
+      ```javascript
+         const file = files.children[0];
+
+         axios.delete("/api/v2/files", {
+            data: { 
+               files: [file.path]
+            }
+         });
+      ```
+
+      or
+
+      ```javascript
+         const file = files.children;
+
+         axios.delete("/api/v2/files", {
+            data: { 
+               files: [files[0].path, files[1].path]
+            }
+         });
+      ```
+
+   - `PUT /api/v2/files/move`
 
       Moves the specified file into another location, this process includes copying the specified file into the `TargetPath`, or files if the specified path is a folder, and deletes the file located on the previous path.
 
@@ -82,6 +297,22 @@ This service is coupled with the [Filespace Frontend](https://github.com/Dyastin
       ```
 
       Returns: `status 200` on success
+
+      Example with axios:
+
+      ```javascript
+         const file = files.children[0];
+         const targetPath = "/folder/sub-folder";
+
+         axios.put("/files/move", {
+          file: {
+            name: file.name,
+            path: file.path,
+            type: file.type,
+          },
+          targetPath,
+        })
+      ```   
 
    - `POST /api/v2/files/share`
   
@@ -104,7 +335,24 @@ This service is coupled with the [Filespace Frontend](https://github.com/Dyastin
 
       Returns: `status 200` on success
 
-2. Authentication `/api/v2/auth`
+      Example with axios:
+
+      ```javascript
+         const file = files.children[0];
+         const email = "email@sample.com";
+         const expiration =   {
+            value: 30 * 60 * 1000,
+            text: "30 minutes",
+         }
+
+         axios.post("/files/share", {
+            email,
+            file: file.path,
+            expiration: expiration,
+          })
+      ```
+
+### Authentication `/api/v2/auth`
 
    - `POST /api/v2/auth`
 
@@ -251,7 +499,7 @@ This repository includes a custom `build.sh` script to simplify the build and de
    ./build.sh
    ```
 
-## What the Script Does
+# What the Script Does
 The script is tightly integrated with `Caddy` & `systemd` and performs the following tasks:
 
 1. **Builds the Application**:
@@ -272,7 +520,7 @@ The script is tightly integrated with `Caddy` & `systemd` and performs the follo
 6. **Verifies Deployment**:
    - Displays the status of the `filespace-v2` service for confirmation.
 
-## What are Things for
+# What are Things for
 
 1. **`secretsaccesor.json`**
    - Used by Google Cloud services like Storage and Secret Manager. The `.env` file contains the variable `GOOGLE_APPLICATION_CREDENTIALS=./secretsaccesor.json`, which points to this file for authentication.
