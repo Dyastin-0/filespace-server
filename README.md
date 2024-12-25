@@ -51,7 +51,7 @@ A `file` is a node which is either a file or a folder based on the property `typ
    - File `prefix/text_file.txt`
    - Folder `prefix/folder_name/`
 
-This function expects an array containing the file's `metadata` builds the file tree there, and returns the `root` node.
+This function expects an array containing the file's `metadata`, builds the file tree, and returns the `root` node.
 
 ```javascript
    const generateFileTree = (files) => {
