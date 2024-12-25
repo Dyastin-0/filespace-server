@@ -304,7 +304,7 @@ This function expects an array containing the file's `metadata`, builds the file
          const file = files.children[0];
          const targetPath = "/folder/sub-folder";
 
-         axios.put("/files/move", {
+         axios.put("/api/v2/files/move", {
           file: {
             name: file.name,
             path: file.path,
@@ -345,7 +345,7 @@ This function expects an array containing the file's `metadata`, builds the file
             text: "30 minutes",
          }
 
-         axios.post("/files/share", {
+         axios.post("/api/v2/files/share", {
             email,
             file: file.path,
             expiration: expiration,
@@ -383,6 +383,18 @@ This function expects an array containing the file's `metadata`, builds the file
       ```
       on success
 
+      Example with axios:
+
+      ```javascript
+         const email = "sample@email.com";
+         const password = "password";
+
+         axios.post("/api/v2/auth", {
+            email,
+            password,
+         });
+      ```
+
    - `POST /api/v2/auth/sign-up`
 
       Expects:
@@ -397,6 +409,20 @@ This function expects an array containing the file's `metadata`, builds the file
 
       returns `status 201` on success
 
+      Example with axios:
+
+      ```javascript
+         const email = "email@sample.com";
+         const username = "user_name";
+         const password = "password";
+
+         axios.post("/api/v2/auth/sign-up", {
+            email,
+            password,
+            username,
+         });
+      ```
+
    - `POST /api/v2/auth/refresh`
 
       Expects:
@@ -407,6 +433,12 @@ This function expects an array containing the file's `metadata`, builds the file
 
       returns the same data as `POST /api/v2/auth` on success
 
+      Example with axios:
+
+      ```javascript
+         axios.post("/api/v2/auth/refresh");
+      ```
+
    - `/api/v2/auth/verify`
 
       Expects:
@@ -415,6 +447,12 @@ This function expects an array containing the file's `metadata`, builds the file
          query.Get("t")
       ```
       Returns the same data as `POST /api/v2/auth` on success
+
+      Example with axios:
+
+      ```javascript
+         axios.post("/api/v2/auth/verify?t=<verification_token>");
+      ```
 
    - `/api/v2/auth/send-verification`
 
@@ -428,7 +466,43 @@ This function expects an array containing the file's `metadata`, builds the file
 
       Returns: `status 200` on success
 
+      Example with axios:
+
+      ```javascript
+         const email = "email@sample.com";
+
+         axios.post("/api/v2/auth/send-verification", {
+            email,
+         });
+      ```
+
+   - `/api/v2/auth//send-recovery`
+
+      Sends a password reset link to the provided email.
+
+      Expects:
+
+      ```go
+         type SendRecoveryBody struct {
+         Email string `json:"email"`
+      }
+      ```
+
+      Returns: `status 200` on success
+
+      Example with axios:
+
+      ```javascript
+         const email = "email@sample.com";
+
+         axios.post("/api/v2/auth/send-recovery", {
+            email,
+         });
+      ```
+
    - `/api/v2/auth/recover`
+      
+      Authenticates the sent link from `/api/v2/auth/send-recovery`, if authenticated process the recovery.
 
       Expects:
 
@@ -441,21 +515,27 @@ This function expects an array containing the file's `metadata`, builds the file
 
       Returns: `status 200` on success, does not automatically log ins user as `POST /api/v2/auth/verify` do
 
-   - `/api/v2/auth//send-recovery`
+      Example with axios:
 
-      Expects:
+      ```javascript
+         const t = "token";
+         const newPassword = "newPassword";
 
-      ```go
-         type SendRecoveryBody struct {
-         Email string `json:"email"`
-      }
+         axios.post("/api/v2/auth/recover", {
+            t,
+            newPassword,
+         });
       ```
-
-      Returns: `status 200` on success
 
    - `/api/v2/auth/log-out`
 
-      Simply clears the jwt in the cookie, if present remove it from the database
+      Simply clears the jwt in the cookie, if present remove it from the database.
+
+      Example with axios:
+
+      ```javascript
+         axios.post("/api/v2/auth/log-out");
+      ```
 
 # Filespace Build and Deploy Script
 
