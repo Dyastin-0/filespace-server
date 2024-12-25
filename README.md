@@ -36,8 +36,8 @@ A `file` is a node which is either a file or a folder based on the property `typ
 
    const file = new File(
       "file",
-      "ex.text",
-      "files/texts",
+      "text_file.txt",
+      "files/text_file.txt",
       <signed_url>,
       <date>,
       <size_byte>,
@@ -99,7 +99,7 @@ This function expects an array containing the file's `metadata` builds the file 
 ```json
    {
    "type": "directory",
-   "name": "my files",
+   "name": "Your files",
    "path": "",
    "link": null,
    "created": null,
@@ -108,34 +108,34 @@ This function expects an array containing the file's `metadata` builds the file 
       {
          "type": "directory",
          "name": "folder1",
-         "path": "/my-bucket/folder1",
-         "link": "https://storage.googleapis.com/my-bucket/folder1",
+         "path": "/Your files/folder1",
+         "link": "https://storage.googleapis.com/Your files/folder1",
          "created": "2024-01-02T12:00:00Z",
          "size": 1024,
          "children": [
          {
             "type": "directory",
             "name": "subfolder1",
-            "path": "/my-bucket/folder1/subfolder1",
-            "link": "https://storage.googleapis.com/my-bucket/folder1/subfolder1",
+            "path": "/Your files/folder1/subfolder1",
+            "link": "https://storage.googleapis.com/Your files/folder1/subfolder1",
             "created": "2024-01-03T12:00:00Z",
             "size": 1024,
             "children": [
                {
                "type": "file",
                "name": "file1.txt",
-               "path": "/my-bucket/folder1/subfolder1/file1.txt",
-               "link": "https://storage.googleapis.com/my-bucket/folder1/subfolder1/file1.txt",
+               "path": "/Your files/folder1/subfolder1/file1.txt",
+               "link": "https://storage.googleapis.com/Your files/folder1/subfolder1/file1.txt",
                "created": "2024-01-04T12:00:00Z",
                "size": 1024,
                "children": null,
-               "parent": "/my-bucket/folder1/subfolder1"
+               "parent": "/Your files/folder1/subfolder1"
                }
             ],
-            "parent": "/my-bucket/folder1"
+            "parent": "/Your files/folder1"
          }
          ],
-         "parent": "/my-bucket"
+         "parent": "/Your files"
       }
    ]
    }
