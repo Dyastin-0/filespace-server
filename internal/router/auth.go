@@ -2,13 +2,14 @@ package router
 
 import (
 	"github.com/go-chi/chi/v5"
+	"golang.org/x/oauth2"
 
 	"go.mongodb.org/mongo-driver/mongo"
 
 	auth "filespace/internal/auth"
 )
 
-func Auth(client *mongo.Client) *chi.Mux {
+func Auth(client *mongo.Client, oauthConfig *oauth2.Config) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Post("/", auth.Handler(client))
@@ -19,8 +20,8 @@ func Auth(client *mongo.Client) *chi.Mux {
 	router.Post("/recover", auth.Recover(client))
 	router.Post("/send-recovery", auth.SendRecovery(client))
 	router.Post("/sign-out", auth.Signout(client))
-	router.Get("/google", auth.Google())
-	router.Get("/google/callback", auth.GoogleCallback(client))
+	router.Get("/google", auth.Google(oauthConfig))
+	router.Get("/google/callback", auth.GoogleCallback(client, oauthConfig))
 
 	return router
 }

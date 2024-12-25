@@ -15,6 +15,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+
 	"cloud.google.com/go/storage"
 
 	middleware "filespace/internal/middleware"
@@ -40,13 +43,23 @@ func main() {
 
 	fmt.Println("Connected to MongoDB.")
 
+	var oauthConfig = &oauth2.Config{
+		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		RedirectURL:  os.Getenv("GOOGLE_REDIRECT_URL"),
+		Scopes: []string{
+			"https://www.googleapis.com/auth/userinfo.profile",
+		},
+		Endpoint: google.Endpoint,
+	}
+
 	MainRouter := chi.NewRouter()
 
 	MainRouter.Use(middleware.Logger)
 	MainRouter.Use(middleware.Credential)
 	MainRouter.Use(render.SetContentType(render.ContentTypeJSON))
 
-	MainRouter.Mount("/api/"+version+"/auth", router.Auth(mongoClient))
+	MainRouter.Mount("/api/"+version+"/auth", router.Auth(mongoClient, oauthConfig))
 	MainRouter.Mount("/api/"+version+"/files", router.File(storageClient, mongoClient))
 
 	port := os.Getenv("PORT")

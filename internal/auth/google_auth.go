@@ -12,30 +12,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 
 	user "filespace/internal/model/user"
 	token "filespace/pkg/util/token"
 )
 
-var googleOAuthConfig = &oauth2.Config{
-	ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-	ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-	RedirectURL:  os.Getenv("GOOGLE_REDIRECT_URL"),
-	Scopes: []string{
-		"https://www.googleapis.com/auth/userinfo.profile",
-	},
-	Endpoint: google.Endpoint,
-}
-
-func Google() http.HandlerFunc {
+func Google(config *oauth2.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		url := googleOAuthConfig.AuthCodeURL("state")
+		url := config.AuthCodeURL("state")
 		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 	}
 }
 
-func GoogleCallback(client *mongo.Client) http.HandlerFunc {
+func GoogleCallback(client *mongo.Client, config *oauth2.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		code := r.URL.Query().Get("code")
 		if code == "" {
@@ -43,14 +32,14 @@ func GoogleCallback(client *mongo.Client) http.HandlerFunc {
 			return
 		}
 
-		tkn, err := googleOAuthConfig.Exchange(r.Context(), code)
+		tkn, err := config.Exchange(r.Context(), code)
 		if err != nil {
 			http.Error(w, "Failed to exchange token", http.StatusInternalServerError)
 			fmt.Printf("Error exchanging token: %v\n", err)
 			return
 		}
 
-		httpClient := googleOAuthConfig.Client(r.Context(), tkn)
+		httpClient := config.Client(r.Context(), tkn)
 		userInfoResponse, err := httpClient.Get("https://www.googleapis.com/oauth2/v2/userinfo")
 		if err != nil {
 			http.Error(w, "Failed to get user info", http.StatusInternalServerError)
