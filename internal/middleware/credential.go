@@ -9,7 +9,7 @@ func Credential(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 		fetchSite := r.Header.Get("Sec-Fetch-Site")
-		isAllowed := false
+		isAllowed := true
 
 		if fetchSite == "same-origin" || fetchSite == "same-site" {
 			isAllowed = true

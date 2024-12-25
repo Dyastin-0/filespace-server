@@ -68,6 +68,7 @@ func generateKeys() {
 		"GCLOUD_PROJECT_ID=filespace-442811",
 		"GOOGLE_APPLICATION_CREDENTIALS=./secretsaccesor.json",
 		"GOOGLE_REDIRECT_URL=https://filespace.dyastin.tech/api/v2/auth/google/callback",
+		"DOMAIN=filespace.dyastin.tech",
 	)
 
 	file, err := os.Open(envFilePath)

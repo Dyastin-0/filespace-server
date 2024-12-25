@@ -110,6 +110,8 @@ func GoogleCallback(client *mongo.Client, config *oauth2.Config) http.HandlerFun
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			MaxAge:   24 * 60 * 60,
+			Domain:   os.Getenv("DOMAIN"),
+			Path:     "/",
 		})
 
 		redirectURL := os.Getenv("BASE_CLIENT_URL") + "/home"

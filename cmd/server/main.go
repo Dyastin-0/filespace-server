@@ -46,7 +46,7 @@ func main() {
 	var oauthConfig = &oauth2.Config{
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-		RedirectURL:  os.Getenv("GOOGLE_REDIRECT_URL"),
+		RedirectURL:  "http://localhost:5173/api/v2/auth/google/callback",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.profile",
 		},
