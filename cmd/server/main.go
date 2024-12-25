@@ -49,6 +49,7 @@ func main() {
 		RedirectURL:  os.Getenv("GOOGLE_REDIRECT_URL"),
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.profile",
+			"https://www.googleapis.com/auth/userinfo.email",
 		},
 		Endpoint: google.Endpoint,
 	}

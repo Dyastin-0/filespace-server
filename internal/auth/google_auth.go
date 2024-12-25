@@ -70,6 +70,7 @@ func GoogleCallback(client *mongo.Client, config *oauth2.Config) http.HandlerFun
 				Username: userInfo["name"].(string),
 				Email:    userInfo["email"].(string),
 				GoogleID: userInfo["id"].(string),
+				ImageURL: userInfo["picture"].(string),
 				Verified: true,
 				Roles:    []string{"122602"},
 				Created:  time.Now(),
