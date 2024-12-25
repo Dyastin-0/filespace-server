@@ -19,6 +19,8 @@ func Auth(client *mongo.Client) *chi.Mux {
 	router.Post("/recover", auth.Recover(client))
 	router.Post("/send-recovery", auth.SendRecovery(client))
 	router.Post("/sign-out", auth.Signout(client))
+	router.Get("/google", auth.Google())
+	router.Get("/google/callback", auth.GoogleCallback(client))
 
 	return router
 }

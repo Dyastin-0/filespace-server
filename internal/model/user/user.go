@@ -21,5 +21,5 @@ type Model struct {
 	ImageURL           string               `bson:"profileImageURL"`
 	GoogleID           string               `bson:"googleId"`
 	UsedStorage        primitive.Decimal128 `bson:"usedStorage"`
-	Created            time.Time            `bson:"created_at"`
+	Created            time.Time            `bson:"created"`
 }
