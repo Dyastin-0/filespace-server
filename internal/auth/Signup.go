@@ -64,6 +64,7 @@ func Signup(client *mongo.Client) http.HandlerFunc {
 			Username: reqBody.Username,
 			Verified: false,
 			Roles:    []string{"122602"},
+			Created:  time.Now(),
 		}
 
 		verificationToken, err := token.Generate(&user, os.Getenv("EMAIL_TOKEN_KEY"), 15*time.Minute)
