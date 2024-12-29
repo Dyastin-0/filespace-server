@@ -66,6 +66,7 @@ func Signout(client *mongo.Client) http.HandlerFunc {
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			MaxAge:   -1,
+			Domain:   os.Getenv("DOMAIN"),
 			Path:     "/",
 		})
 
