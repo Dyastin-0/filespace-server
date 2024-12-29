@@ -67,7 +67,7 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 		var newRefreshTokens []string
 		if len(cookies) > 0 {
 			for _, cookie := range cookies {
-				if cookie.Name == "jwt" {
+				if cookie.Name == "rt" {
 					foundToken := false
 					for _, rt := range user.RefreshToken {
 						if rt == cookie.Value {
@@ -79,12 +79,13 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 						newRefreshTokens = []string{}
 					}
 					http.SetCookie(w, &http.Cookie{
-						Name:     "jwt",
+						Name:     "rt",
 						Value:    "",
 						HttpOnly: true,
 						SameSite: http.SameSiteNoneMode,
 						Secure:   true,
 						MaxAge:   -1,
+						Path:     "/",
 					})
 				} else {
 					newRefreshTokens = append(newRefreshTokens, cookie.Value)
@@ -102,12 +103,13 @@ func Handler(client *mongo.Client) http.HandlerFunc {
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     "jwt",
+			Name:     "rt",
 			Value:    newRefreshToken,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			MaxAge:   24 * 60 * 60,
+			Path:     "/",
 		})
 
 		response := types.Response{

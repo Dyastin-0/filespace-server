@@ -105,7 +105,7 @@ func GoogleCallback(client *mongo.Client, config *oauth2.Config) http.HandlerFun
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     "jwt",
+			Name:     "rt",
 			Value:    refreshToken,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,

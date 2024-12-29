@@ -18,7 +18,7 @@ import (
 
 func Refresh(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("jwt")
+		cookie, err := r.Cookie("rt")
 
 		if err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -27,12 +27,13 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 
 		refreshToken := cookie.Value
 		http.SetCookie(w, &http.Cookie{
-			Name:     "jwt",
+			Name:     "rt",
 			Value:    "",
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			MaxAge:   -1,
+			Path:     "/",
 		})
 
 		collection := client.Database("test").Collection("users")
@@ -102,12 +103,13 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     "jwt",
+			Name:     "rt",
 			Value:    newRefreshToken,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			MaxAge:   24 * 60 * 60,
+			Path:     "/",
 		})
 
 		response := authTypes.Response{

@@ -14,7 +14,7 @@ import (
 
 func Signout(client *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("jwt")
+		cookie, err := r.Cookie("rt")
 
 		if err != nil {
 			w.WriteHeader(http.StatusOK)
@@ -35,12 +35,13 @@ func Signout(client *mongo.Client) http.HandlerFunc {
 
 		if err != nil {
 			http.SetCookie(w, &http.Cookie{
-				Name:     "jwt",
+				Name:     "rt",
 				Value:    "",
 				HttpOnly: true,
 				SameSite: http.SameSiteNoneMode,
 				Secure:   true,
 				MaxAge:   -1,
+				Path:     "/",
 			})
 
 			w.WriteHeader(http.StatusOK)
@@ -58,12 +59,13 @@ func Signout(client *mongo.Client) http.HandlerFunc {
 		collection.UpdateOne(r.Context(), filter, bson.M{"$set": bson.M{"refreshToken": newRefeshToken}})
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     "jwt",
+			Name:     "rt",
 			Value:    "",
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			MaxAge:   -1,
+			Path:     "/",
 		})
 
 		w.WriteHeader(http.StatusOK)

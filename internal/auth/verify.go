@@ -85,7 +85,7 @@ func Verify(client *mongo.Client) http.HandlerFunc {
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     "jwt",
+			Name:     "rt",
 			Value:    refreshToken,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,

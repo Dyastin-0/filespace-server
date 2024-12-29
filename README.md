@@ -428,7 +428,7 @@ This function expects an array containing the file's `metadata`, builds the file
       Expects:
 
       ```go
-         r.Cookie("jwt")
+         r.Cookie("rt")
       ```
 
       returns the same data as `POST /api/v2/auth` on success
