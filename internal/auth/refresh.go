@@ -33,6 +33,7 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			MaxAge:   -1,
+			Domain:   os.Getenv("DOMAIN"),
 			Path:     "/",
 		})
 
@@ -109,6 +110,7 @@ func Refresh(client *mongo.Client) http.HandlerFunc {
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			MaxAge:   24 * 60 * 60,
+			Domain:   os.Getenv("DOMAIN"),
 			Path:     "/",
 		})
 
