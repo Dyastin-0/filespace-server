@@ -1,15 +1,14 @@
 [Unit]
-Description=Filespace Server v2
+Description=Filespace Server
 After=network.target multi-user.target
 
 [Service]
-User=ubuntu
-WorkingDirectory=/opt/filespace
-ExecStart=/opt/filespace/run
-Restart=always
+User=mrps
+ExecStart=/opt/mrps/filespace/filespace
+Restart=never
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=filespacev2
+SyslogIdentifier=filespaceserver
 
 [Install]
 WantedBy=multi-user.target

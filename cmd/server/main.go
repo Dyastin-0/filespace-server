@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 
@@ -25,10 +23,6 @@ import (
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	version := os.Getenv("VERSION")
 
 	mongoClient, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGODB_URI")))

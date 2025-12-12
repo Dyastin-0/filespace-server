@@ -47,7 +47,7 @@ func Share(storageClient *storage.Client, mongoClient *mongo.Client) http.Handle
 
 		signedURL, err := bucket.SignedURL(attrs.Name, &storage.SignedURLOptions{
 			Method:  "GET",
-			Expires: time.Now().Add(time.Duration(reqBody.Exp.Value)),
+			Expires: time.Now().Add(time.Duration(reqBody.Exp.Value) * time.Millisecond),
 		})
 
 		if err != nil {

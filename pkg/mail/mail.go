@@ -21,10 +21,10 @@ func getClient() (*mail.Client, error) {
 	var err error
 
 	clientOnce.Do(func() {
-		client, err = mail.NewClient("smtp.zoho.com",
-			mail.WithPort(587),
+		client, err = mail.NewClient("smtp.sendgrid.net",
+			mail.WithPort(2525),
 			mail.WithSMTPAuth(mail.SMTPAuthPlain),
-			mail.WithUsername((os.Getenv("SERVER_EMAIL"))),
+			mail.WithUsername("apikey"),
 			mail.WithPassword(os.Getenv("SERVER_EMAIL_PASSWORD")),
 		)
 		if err != nil {
