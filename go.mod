@@ -5,15 +5,15 @@ go 1.23.4
 require (
 	cloud.google.com/go/secretmanager v1.14.2
 	cloud.google.com/go/storage v1.49.0
-	github.com/go-chi/chi/v5 v5.2.0
+	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-chi/render v1.0.3
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/joho/godotenv v1.5.1
 	github.com/wneessen/go-mail v0.5.2
 	go.mongodb.org/mongo-driver v1.17.1
 	golang.org/x/crypto v0.31.0
-	google.golang.org/api v0.214.0
 	golang.org/x/oauth2 v0.24.0
+	google.golang.org/api v0.214.0
 )
 
 require (
