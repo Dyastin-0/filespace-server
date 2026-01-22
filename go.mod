@@ -12,7 +12,7 @@ require (
 	github.com/wneessen/go-mail v0.7.1
 	go.mongodb.org/mongo-driver v1.17.1
 	golang.org/x/crypto v0.31.0
-	golang.org/x/oauth2 v0.24.0
+	golang.org/x/oauth2 v0.27.0
 	google.golang.org/api v0.214.0
 )
 
